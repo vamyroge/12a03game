@@ -1,0 +1,168 @@
+Hãy inspect toàn bộ code hiện tại của game Quiz/Warm-up trước khi chỉnh sửa. Không hỏi lại những thứ đã có trong code. Giữ nguyên các cơ chế game hiện tại nếu không được yêu cầu thay đổi.
+
+## 1. Đưa toàn bộ Quiz JSON + ảnh vào code
+
+Tôi KHÔNG muốn phần setup câu hỏi và upload/chọn ảnh xuất hiện trên website nữa.
+
+Hãy:
+
+* Xóa/ẩn hoàn toàn UI setup câu hỏi trên web.
+* Xóa/ẩn toàn bộ UI upload ảnh trên web.
+* Không cần backend cho phần này.
+* Chuyển dữ liệu câu hỏi + đáp án + thông tin nhân vật + đường dẫn ảnh thành dữ liệu cấu hình nằm trực tiếp trong source code.
+* Tạo một file config/data rõ ràng, ví dụ:
+  `src/data/quizData.ts` hoặc `src/data/quizData.json`
+* Ảnh phải được tham chiếu trực tiếp từ code/public assets, ví dụ:
+  `/quiz/characters/xxx.webp`
+* Có thể dễ dàng thêm/sửa câu hỏi bằng cách chỉnh file code/data mà không cần mở website.
+* Không hard-code rải rác dữ liệu ở nhiều component.
+* Nếu project đang có schema/type cho Quiz thì tái sử dụng hoặc refactor thành một schema rõ ràng.
+
+Ví dụ cấu trúc mong muốn:
+
+```ts
+{
+  id: "character-001",
+  image: "/quiz/characters/character-001.webp",
+  question: "...",
+  answers: ["...", "...", "...", "..."],
+  correctAnswer: "...",
+  hints: [...],
+}
+```
+
+Không cần làm admin panel hay CMS.
+
+## 2. Lucky Wheel sau khi mở khóa
+
+Giữ Lucky Wheel hiện tại nhưng thay đổi UX:
+
+### Trạng thái chưa mở khóa
+
+* Lucky Wheel vẫn chỉ xuất hiện dưới dạng ICON nhỏ ở góc màn hình.
+* Không chiếm diện tích gameplay.
+* Có thể click icon để mở nếu cơ chế hiện tại cho phép.
+
+### Trạng thái đã mở khóa
+
+Sau khi Lucky Wheel được mở khóa:
+
+* Vẫn giữ icon nhỏ ở góc.
+* Nhưng bổ sung một nút/CTA rõ ràng: `JOIN IN`.
+* Khi người chơi bấm `JOIN IN`, mở Lucky Wheel dạng BIG/MODAL ở giữa màn hình.
+* Big Lucky Wheel phải lớn, dễ nhìn, dễ thao tác.
+* Background phía sau có overlay nhẹ để tập trung vào wheel.
+* Wheel phải responsive, không bị tràn màn hình trên desktop/mobile.
+* Có animation mở modal mượt.
+* Không làm mất trạng thái/ranking hiện tại.
+
+Flow:
+
+`Locked → icon nhỏ`
+
+`Unlocked → icon nhỏ + JOIN IN`
+
+`JOIN IN → Big Lucky Wheel Modal`
+
+`Spin → kết quả → đóng/quay lại game`
+
+Không tạo thêm backend.
+
+## 3. BIG CHEST
+
+Chỉnh animation của Big Chest:
+
+* Khi mở Big Chest, hiệu ứng mở phải diễn ra lâu hơn hiện tại một chút.
+* Tạo cảm giác suspense/reward, không mở ngay lập tức.
+* Có thể dùng:
+
+  * shake nhẹ
+  * glow
+  * anticipation delay
+  * lid opening
+  * reward reveal
+* Nhưng KHÔNG được làm animation quá dài hoặc gây khó chịu.
+* Tổng thời gian mở khoảng 2–3 giây là hợp lý.
+* Sau khi animation kết thúc mới reveal reward chính thức.
+* Đảm bảo không thể click spam để trigger nhiều lần.
+* Nếu có sound/effect system hiện tại thì tái sử dụng.
+
+## 4. Thu nhỏ Big Chest
+
+Big Chest hiện đang hiển thị quá lớn trên web.
+
+Hãy giảm kích thước visual của Big Chest xuống khoảng **50% kích thước hiện tại**.
+
+Quan trọng:
+
+* Hiểu "50%" là giảm kích thước hiển thị xuống còn khoảng một nửa so với hiện tại.
+* Không chỉ scale ảnh mà phải đảm bảo container/layout/animation/hitbox cũng được điều chỉnh phù hợp.
+* Không làm mất chất lượng hình ảnh.
+* Không làm chest bị lệch khỏi center.
+* Responsive trên desktop và mobile.
+* Nếu animation đang dựa trên transform/scale thì refactor để animation vẫn đẹp sau khi resize.
+
+## 5. Giữ nguyên gameplay
+
+KHÔNG thay đổi các logic đã có nếu không liên quan trực tiếp tới yêu cầu trên.
+
+Đặc biệt giữ nguyên:
+
+* Random điểm.
+* Ranking.
+* Có thể random mà không cần trả lời.
+* Flow Clapping Hand.
+* Flow quay lần 1 → Clapping Hand.
+* Flow quay lần 2 → Chest.
+* Lucky Wheel logic hiện tại nếu không cần thay đổi.
+* Không thêm backend.
+* Không thêm database.
+* Không biến game thành hệ thống phức tạp.
+
+## 6. UI/UX quality
+
+Phong cách:
+
+* Modern game UI.
+* Smooth.
+* Responsive.
+* Animation có cảm giác reward/game thật.
+* Không template-looking.
+* Không để layout shift.
+* Không để modal/wheel/chest bị overflow.
+* Button phải có hover/active/disabled state.
+* Không để animation block toàn bộ app ngoài ý muốn.
+
+## 7. Kiểm tra sau khi sửa
+
+Sau khi implementation:
+
+1. Chạy typecheck.
+2. Chạy lint.
+3. Chạy test nếu project có test.
+4. Chạy build.
+5. Nếu có lỗi thì tự sửa.
+6. Kiểm tra toàn bộ flow:
+
+   * Quiz load từ code.
+   * Không còn UI upload ảnh.
+   * Không còn UI setup JSON trên web.
+   * Lucky Wheel locked → icon.
+   * Unlock → icon + JOIN IN.
+   * JOIN IN → Big Wheel.
+   * Spin → reward.
+   * Big Chest mở khoảng 2–3 giây.
+   * Big Chest có kích thước khoảng 50% hiện tại.
+   * Ranking không bị reset.
+   * Không có duplicate event/click.
+7. Không kết thúc task chỉ vì code compile; phải kiểm tra behavior và responsive layout.
+
+Cuối cùng báo cáo ngắn:
+
+* Đã sửa những file nào.
+* Đã thay đổi flow nào.
+* Config Quiz nằm ở đâu.
+* Ảnh được đặt/tham chiếu ở đâu.
+* Các command đã chạy.
+* Kết quả typecheck/lint/build/test.
+* Nếu có điểm nào chưa thể verify thực tế thì ghi rõ.
