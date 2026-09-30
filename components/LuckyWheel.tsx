@@ -352,7 +352,6 @@ export default function LuckyWheel({ unlocked, spinCount, onSpin }: LuckyWheelPr
                   {Array.from({ length: 20 }).map((_, i) => {
                     const isBigChest = i === 10;
                     const angle = (i * 360) / 20; // Degrees from top
-                    const rotation = angle; // Icon rotation to keep upright
                     
                     return (
                       <div
