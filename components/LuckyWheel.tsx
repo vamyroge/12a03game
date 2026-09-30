@@ -305,32 +305,77 @@ export default function LuckyWheel({ unlocked, spinCount, onSpin }: LuckyWheelPr
                 {/* Wheel rotating part */}
                 <motion.div
                   animate={controls}
-                  className="absolute inset-2 rounded-full overflow-hidden"
-                  style={{ 
-                    rotate: 0,
-                    background: 'conic-gradient(from 0deg, #ef4444 0deg 18deg, #ffffff 18deg 36deg, #ef4444 36deg 54deg, #ffffff 54deg 72deg, #ef4444 72deg 90deg, #ffffff 90deg 108deg, #ef4444 108deg 126deg, #ffffff 126deg 144deg, #ef4444 144deg 162deg, #fbbf24 162deg 180deg, #ef4444 180deg 198deg, #ffffff 198deg 216deg, #ef4444 216deg 234deg, #ffffff 234deg 252deg, #ef4444 252deg 270deg, #ffffff 270deg 288deg, #ef4444 288deg 306deg, #ffffff 306deg 324deg, #ef4444 324deg 342deg, #ffffff 342deg 360deg)'
-                  }}
+                  className="absolute inset-2 rounded-full overflow-hidden bg-gradient-to-br from-gray-800 to-gray-900"
+                  style={{ rotate: 0 }}
                 >
-                  {/* Segment icons */}
+                  {/* Draw 20 segments with dividers */}
+                  <svg className="absolute inset-0 w-full h-full" viewBox="0 0 200 200">
+                    <defs>
+                      {/* Gradient for segments */}
+                      <radialGradient id="segmentGradient">
+                        <stop offset="0%" stopColor="#374151" />
+                        <stop offset="100%" stopColor="#1f2937" />
+                      </radialGradient>
+                    </defs>
+                    
+                    {/* Draw 20 segments */}
+                    {Array.from({ length: 20 }).map((_, i) => {
+                      const isBigChest = i === 10;
+                      const startAngle = (i * 360) / 20 - 90; // Start from top
+                      const endAngle = ((i + 1) * 360) / 20 - 90;
+                      
+                      // Convert to radians
+                      const startRad = (startAngle * Math.PI) / 180;
+                      const endRad = (endAngle * Math.PI) / 180;
+                      
+                      // Calculate path for pizza slice
+                      const x1 = 100 + 100 * Math.cos(startRad);
+                      const y1 = 100 + 100 * Math.sin(startRad);
+                      const x2 = 100 + 100 * Math.cos(endRad);
+                      const y2 = 100 + 100 * Math.sin(endRad);
+                      
+                      return (
+                        <g key={i}>
+                          {/* Segment slice */}
+                          <path
+                            d={`M 100 100 L ${x1} ${y1} A 100 100 0 0 1 ${x2} ${y2} Z`}
+                            fill={isBigChest ? '#fbbf24' : i % 2 === 0 ? '#ef4444' : '#ffffff'}
+                            stroke="#000000"
+                            strokeWidth="1"
+                          />
+                        </g>
+                      );
+                    })}
+                  </svg>
+
+                  {/* Icons positioned correctly in each segment */}
                   {Array.from({ length: 20 }).map((_, i) => {
                     const isBigChest = i === 10;
-                    const rotation = (i * 360) / 20 + 9; // Offset for centering
-
+                    const angle = (i * 360) / 20; // Degrees from top
+                    const rotation = angle; // Icon rotation to keep upright
+                    
                     return (
                       <div
                         key={i}
-                        className="absolute left-1/2 top-0 origin-bottom"
+                        className="absolute left-1/2 top-1/2"
                         style={{
-                          height: '50%',
-                          transform: `rotate(${rotation}deg) translateX(-50%)`,
+                          transform: `rotate(${angle}deg) translateY(-60px) rotate(-${angle}deg)`,
+                          transformOrigin: 'center',
                         }}
                       >
-                        <div className="text-2xl mt-4">
+                        <div className="text-2xl" style={{ textShadow: '0 2px 4px rgba(0,0,0,0.5)' }}>
                           {isBigChest ? '🎁' : '👏'}
                         </div>
                       </div>
                     );
                   })}
+
+                  {/* Center circle */}
+                  <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+                    <div className="w-20 h-20 bg-gradient-to-br from-yellow-300 to-yellow-600 rounded-full border-4 border-white shadow-xl flex items-center justify-center">
+                      <div className="text-4xl">🎰</div>
+                    </div>
+                  </div>
                 </motion.div>
 
                 {/* Center hub */}
