@@ -12,7 +12,7 @@ import PuzzleGrid from '@/components/PuzzleGrid';
 import QuestionModal from '@/components/QuestionModal';
 import RewardModal from '@/components/RewardModal';
 import LuckyWheel from '@/components/LuckyWheel';
-import ChestReward from '@/components/ChestReward';
+import TreasureChest from '@/components/TreasureChest';
 import CelebrationModal from '@/components/CelebrationModal';
 import AudioControls from '@/components/AudioControls';
 import GameControls from '@/components/GameControls';
@@ -34,6 +34,18 @@ export default function Home() {
   const [doubleNextReward, setDoubleNextReward] = useState(false);
   const [freePassAvailable, setFreePassAvailable] = useState(false);
   const [soundEnabled, setSoundEnabled] = useState(true);
+
+  // Background particles for depth
+  const [particles] = useState(() => {
+    return Array.from({ length: 30 }).map(() => ({
+      x1: Math.random() * 1920,
+      x2: Math.random() * 1920,
+      y1: Math.random() * 1080,
+      y2: Math.random() * 1080,
+      duration: 4 + Math.random() * 3,
+      size: 1 + Math.random() * 2,
+    }));
+  });
 
   useEffect(() => {
     // Initialize audio on first user interaction
@@ -119,7 +131,7 @@ export default function Home() {
     } else if (reward.type === 'doubleNext') {
       setDoubleNextReward(true);
     } else if (reward.type === 'openExtra') {
-      const unopenedTiles = Array.from({ length: 16 }, (_, i) => i).filter(
+      const unopenedTiles = Array.from({ length: 20 }, (_, i) => i).filter(
         (i) => !openedTiles.has(i) && i !== currentTileIndex
       );
       if (unopenedTiles.length > 0) {
@@ -157,7 +169,7 @@ export default function Home() {
   };
 
   const handleOpenAll = () => {
-    const unopenedTiles = Array.from({ length: 16 }, (_, i) => i).filter((i) => !openedTiles.has(i));
+    const unopenedTiles = Array.from({ length: 20 }, (_, i) => i).filter((i) => !openedTiles.has(i));
 
     unopenedTiles.forEach((tile, index) => {
       setTimeout(() => {
@@ -209,49 +221,79 @@ export default function Home() {
 
   const currentQuestion = currentTileIndex !== null ? questions[currentTileIndex] : null;
 
-  // Generate stable random values for background particles
-  const [particles] = useState(() => {
-    return Array.from({ length: 20 }).map(() => ({
-      x1: Math.random() * 1920,
-      x2: Math.random() * 1920,
-      y1: Math.random() * 1080,
-      y2: Math.random() * 1080,
-      duration: 3 + Math.random() * 2,
-    }));
-  });
-
   return (
-    <div className="min-h-screen bg-gradient-to-br from-indigo-900 via-purple-900 to-pink-900 relative overflow-hidden">
-      <div className="absolute inset-0 opacity-30">
+    <div className="min-h-screen relative overflow-hidden">
+      {/* Deep dark background with gradients */}
+      <div className="fixed inset-0 bg-gradient-to-br from-[#0a0118] via-[#150828] to-[#1f0d38]" />
+
+      {/* Ambient light blobs */}
+      <div className="fixed inset-0 opacity-30">
+        <motion.div
+          animate={{
+            x: [0, 100, 0],
+            y: [0, -50, 0],
+            scale: [1, 1.2, 1],
+          }}
+          transition={{ duration: 20, repeat: Infinity, ease: 'easeInOut' }}
+          className="absolute top-20 left-20 w-96 h-96 bg-purple-600/30 rounded-full blur-3xl"
+        />
+        <motion.div
+          animate={{
+            x: [0, -100, 0],
+            y: [0, 50, 0],
+            scale: [1, 1.3, 1],
+          }}
+          transition={{ duration: 25, repeat: Infinity, ease: 'easeInOut' }}
+          className="absolute bottom-20 right-20 w-80 h-80 bg-blue-600/30 rounded-full blur-3xl"
+        />
+        <motion.div
+          animate={{
+            x: [0, 50, 0],
+            y: [0, -30, 0],
+            scale: [1, 1.15, 1],
+          }}
+          transition={{ duration: 18, repeat: Infinity, ease: 'easeInOut' }}
+          className="absolute top-1/2 left-1/2 w-72 h-72 bg-cyan-600/20 rounded-full blur-3xl"
+        />
+      </div>
+
+      {/* Subtle particles */}
+      <div className="fixed inset-0 opacity-20 pointer-events-none">
         {particles.map((particle, i) => (
           <motion.div
             key={i}
-            className="absolute w-2 h-2 bg-white rounded-full"
+            className="absolute rounded-full bg-white"
+            style={{ width: particle.size, height: particle.size }}
             animate={{
               x: [particle.x1, particle.x2],
               y: [particle.y1, particle.y2],
-              opacity: [0, 1, 0],
+              opacity: [0, 0.6, 0],
             }}
             transition={{
               duration: particle.duration,
               repeat: Infinity,
-              delay: i * 0.2,
+              delay: i * 0.1,
+              ease: 'easeInOut',
             }}
           />
         ))}
       </div>
 
-      <div className="relative z-10 min-h-screen flex flex-col items-center justify-center p-8 gap-12">
+      {/* Main content */}
+      <div className="relative z-10 min-h-screen flex flex-col items-center justify-center p-4 gap-6">
+        {/* Header - 50% scale */}
         <motion.h1
-          initial={{ y: -50, opacity: 0 }}
+          initial={{ y: -30, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
-          className="text-6xl font-black text-center bg-gradient-to-r from-yellow-400 via-pink-400 to-purple-400 bg-clip-text text-transparent"
+          className="text-4xl font-black text-center bg-gradient-to-r from-yellow-400 via-pink-400 to-purple-400 bg-clip-text text-transparent drop-shadow-lg"
         >
           WHO IS THIS?
         </motion.h1>
 
+        {/* ScoreBoard - compact */}
         <ScoreBoard scores={scores} currentGroup={currentGroup} />
 
+        {/* Puzzle Grid */}
         {imageUrl && (
           <PuzzleGrid
             imageUrl={imageUrl}
@@ -261,28 +303,32 @@ export default function Home() {
           />
         )}
 
-        <div className="flex gap-4">
-          {doubleNextReward && (
-            <motion.div
-              initial={{ scale: 0 }}
-              animate={{ scale: 1 }}
-              className="bg-purple-500/30 border-2 border-purple-400 text-purple-200 text-lg font-bold py-2 px-6 rounded-xl"
-            >
-              ✨ DOUBLE NEXT ACTIVE
-            </motion.div>
-          )}
-          {freePassAvailable && (
-            <motion.div
-              initial={{ scale: 0 }}
-              animate={{ scale: 1 }}
-              className="bg-yellow-500/30 border-2 border-yellow-400 text-yellow-200 text-lg font-bold py-2 px-6 rounded-xl"
-            >
-              🎫 FREE PASS AVAILABLE
-            </motion.div>
-          )}
-        </div>
+        {/* Active power-ups indicator */}
+        {(doubleNextReward || freePassAvailable) && (
+          <div className="flex gap-2">
+            {doubleNextReward && (
+              <motion.div
+                initial={{ scale: 0 }}
+                animate={{ scale: 1 }}
+                className="bg-purple-500/20 border border-purple-400 text-purple-200 text-xs font-bold py-1.5 px-4 rounded-full backdrop-blur-sm"
+              >
+                ✨ DOUBLE NEXT
+              </motion.div>
+            )}
+            {freePassAvailable && (
+              <motion.div
+                initial={{ scale: 0 }}
+                animate={{ scale: 1 }}
+                className="bg-yellow-500/20 border border-yellow-400 text-yellow-200 text-xs font-bold py-1.5 px-4 rounded-full backdrop-blur-sm"
+              >
+                🎫 FREE PASS
+              </motion.div>
+            )}
+          </div>
+        )}
       </div>
 
+      {/* Modals */}
       <AnimatePresence>
         {phase === 'QUESTION' && currentQuestion && (
           <QuestionModal
@@ -314,9 +360,10 @@ export default function Home() {
       </AnimatePresence>
 
       <AnimatePresence>
-        {phase === 'CHEST' && <ChestReward onClose={handleChestClose} />}
+        {phase === 'CHEST' && <TreasureChest onClose={handleChestClose} />}
       </AnimatePresence>
 
+      {/* UI Controls */}
       <LuckyWheel
         unlocked={luckyWheelUnlocked}
         spinCount={luckyWheelSpinCount}

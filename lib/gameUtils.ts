@@ -30,8 +30,8 @@ export const validateQuestions = (data: unknown): { valid: boolean; error?: stri
     return { valid: false, error: 'Questions must be an array' };
   }
 
-  if (data.length !== 16) {
-    return { valid: false, error: `Must have exactly 16 questions (found ${data.length})` };
+  if (data.length !== 20) {
+    return { valid: false, error: `Must have exactly 20 questions (found ${data.length})` };
   }
 
   for (let i = 0; i < data.length; i++) {

@@ -5,7 +5,7 @@
  * Edit this file to change questions or the secret image.
  * 
  * Requirements:
- * - Exactly 16 questions
+ * - Exactly 20 questions
  * - All options (A, B, C, D) must be present
  * - correctAnswer must be "A", "B", "C", or "D"
  * - Image must be in /public directory
@@ -41,7 +41,7 @@ export const QUIZ_CONFIG: QuizConfig = {
   // Secret image path (relative to /public)
   secretImage: '/quiz/characters/mystery-person.jpg',
   
-  // 16 Questions for the puzzle game
+  // 20 Questions for the puzzle game
   questions: [
     {
       id: 1,
@@ -218,6 +218,50 @@ export const QUIZ_CONFIG: QuizConfig = {
         D: "Uncertain"
       },
       correctAnswer: "C"
+    },
+    {
+      id: 17,
+      question: "What does 'to address an audience' mean?",
+      options: {
+        A: "To write down addresses",
+        B: "To speak to a group",
+        C: "To send mail",
+        D: "To ignore people"
+      },
+      correctAnswer: "B"
+    },
+    {
+      id: 18,
+      question: "Which is a transition phrase?",
+      options: {
+        A: "Moving on to...",
+        B: "Hello everyone",
+        C: "Thank you",
+        D: "My name is"
+      },
+      correctAnswer: "A"
+    },
+    {
+      id: 19,
+      question: "'To summarize' means:",
+      options: {
+        A: "To add more details",
+        B: "To give a brief overview",
+        C: "To change the subject",
+        D: "To ask questions"
+      },
+      correctAnswer: "B"
+    },
+    {
+      id: 20,
+      question: "What is 'stage fright'?",
+      options: {
+        A: "Fear of heights",
+        B: "Fear of speaking in public",
+        C: "Fear of darkness",
+        D: "Fear of animals"
+      },
+      correctAnswer: "B"
     }
   ]
 };
