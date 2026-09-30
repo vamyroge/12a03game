@@ -1,792 +1,523 @@
-Hãy tiếp tục làm việc trực tiếp trên codebase game Quiz hiện tại.
+Tiếp tục làm việc trên codebase game Quiz hiện tại.
 
-Bạn phải đóng vai đồng thời:
+**KHÔNG rebuild project.**
+**KHÔNG thay đổi gameplay logic không liên quan.**
+**KHÔNG xóa các animation/effect đã làm tốt ở phiên bản trước.**
 
-* Senior Frontend Engineer
-* Senior Game UI/UX Designer
-* Motion Designer
-* Game Reward/Interaction Designer
-* Visual QA Engineer
-
-Mục tiêu: biến game Quiz hiện tại thành một **premium modern game-show experience** với UI nhỏ gọn, rực rỡ, có chiều sâu, animation đẹp và reward moments thực sự hấp dẫn.
-
-**KHÔNG rebuild project từ đầu.**
-**KHÔNG thêm backend/database.**
-**KHÔNG phá gameplay logic đang hoạt động.**
-Hãy inspect code hiện tại trước, hiểu architecture và tái sử dụng những gì tốt.
+Hãy inspect implementation hiện tại rồi thực hiện các chỉnh sửa dưới đây.
 
 ---
 
-# A. QUIZ DATA — 20 CÂU
+# 1. THÊM NHẠC NỀN NHẸ
 
-Toàn bộ setup Quiz phải nằm trong source code, KHÔNG xuất hiện trên website.
-
-Không cần:
-
-* JSON editor trên web
-* upload ảnh trên web
-* admin setup UI
-* backend
-* database
-
-Tạo một source of truth duy nhất, ví dụ:
-
-`src/data/quizData.ts`
-
-hoặc cấu trúc phù hợp với project hiện tại.
-
-Mỗi question cần có schema rõ ràng, ví dụ:
-
-```ts
-{
-  id: "character-001",
-  image: "/quiz/characters/character-001.webp",
-  question: "...",
-  answers: ["...", "...", "...", "..."],
-  correctAnswer: "...",
-  hints: [...]
-}
-```
+Thêm background music cho game.
 
 Yêu cầu:
 
-* Tổng cộng **20 câu hỏi hoàn chỉnh**.
-* 20 câu không trùng nhau.
-* Mỗi câu có ảnh hợp lệ.
-* Không placeholder.
-* Không broken image.
-* Có correct answer.
-* Random quiz có thể sử dụng đủ 20 câu.
-* Dễ chỉnh sửa về sau bằng một file config duy nhất.
+* Nhạc nền nhẹ.
+* Năng lượng vui vẻ, phù hợp game quiz/warm-up.
+* Không quá ồn hoặc gây khó chịu.
+* Volume mặc định thấp, khoảng 10–20%.
+* Có loop.
+* Không làm ảnh hưởng performance.
 
-Xóa/ẩn hoàn toàn mọi UI setup/upload hiện tại khỏi production UI.
+Tạo music control nhỏ, ví dụ:
 
----
+`🔊 / 🔇`
 
-# B. SCALE TOÀN BỘ GIAO DIỆN
+Có thể đặt ở góc màn hình cùng nhóm utility controls.
 
-Hiện tại UI đang quá lớn/zoom quá to.
+### Quan trọng
 
-Hãy đưa **toàn bộ visual scale về khoảng 50% so với phiên bản hiện tại**.
+Không tự động phát nhạc theo cách bị browser chặn.
 
-Không được đơn giản làm:
+Nếu browser yêu cầu user interaction:
 
-```css
-transform: scale(0.5)
-```
+* chờ user click/tương tác đầu tiên.
+* sau đó bắt đầu music.
+* không phá flow game.
 
-cho toàn app.
+Khi mute:
 
-Phải thực sự điều chỉnh:
+* nhạc dừng.
+* icon đổi trạng thái.
 
-* font-size
-* width
-* height
-* padding
-* margin
-* gap
-* card dimensions
-* image dimensions
-* button dimensions
-* modal dimensions
-* wheel dimensions
-* chest dimensions
-* spacing
-* typography
+Khi unmute:
 
-Các thành phần cần rà soát:
+* nhạc tiếp tục.
 
-* Header
-* Quiz
-* Question card
-* Character image
-* Answer buttons
-* Score
-* Ranking
-* Lucky Wheel
-* Lucky Wheel modal
-* Big Chest
-* Reward popup
-* Buttons
-* Toasts
-* Modals
-
-Mục tiêu:
-
-> compact + clean + readable + easy to interact
-
-Không để UI bé đến mức khó click.
-
-Responsive phải hoạt động tốt trên desktop và mobile.
+Không restart nhạc mỗi lần đổi component/state.
 
 ---
 
-# C. VISUAL DESIGN SYSTEM
+# 2. ĐỔI BACKGROUND WEB — SÁNG HƠN & NĂNG LƯỢNG HƠN
 
-Đừng chỉ "thêm gradient".
+Background hiện tại đang hơi tối.
 
-Hãy xây dựng một visual language thống nhất:
+Hãy làm background:
 
-**Modern Game Show × Premium Mobile Game × Interactive Reward UI**
+**sáng hơn + energetic hơn + colorful hơn**
 
-Cảm giác:
+nhưng vẫn đảm bảo text/UI dễ đọc.
+
+Visual direction:
 
 * vibrant
-* exciting
-* polished
 * playful
-* premium
-* responsive
-* rewarding
-
-Không được giống:
-
-* SaaS dashboard
-* generic landing page
-* template UI
-* CSS demo
-* một đống neon vô tổ chức
-
----
-
-# D. COLOR & LIGHTING
-
-Dùng palette rực rỡ có kiểm soát.
+* modern
+* energetic
+* game-show feeling
 
 Có thể sử dụng:
 
-* deep dark background
-* blue
-* purple
+* soft blue
 * cyan
+* purple
 * pink
-* orange
-* gold
+* warm yellow/orange
+* subtle gradient
+* ambient blobs
+* soft glow
 
-Nhưng phải có hierarchy:
+Nhưng KHÔNG làm background thành một gradient phẳng khổng lồ.
 
-### Normal
+Tạo depth bằng nhiều lớp ánh sáng nhẹ.
 
-Clean, relatively calm.
+Ví dụ hierarchy:
 
-### Interactive
+```text
+Background
+→ ambient gradients
+→ subtle floating shapes/particles
+→ game UI
+→ reward effects
+```
 
-Subtle accent/glow.
+Background không được cạnh tranh với:
 
-### Unlocked
+* Quiz
+* Ranking
+* Lucky Wheel
+* Clapping Hand
+* Big Chest
 
-Strong highlight.
+Mục tiêu:
 
-### Reward
-
-Maximum visual intensity.
-
-Không làm mọi component đều phát sáng cùng lúc.
-
----
-
-# E. BACKGROUND
-
-Không để background phẳng.
-
-Tạo chiều sâu bằng:
-
-* subtle radial gradients
-* ambient light
-* blurred light blobs
-* subtle particles
-* depth layers
-
-Nhưng background không được cạnh tranh với Quiz/Wheel/Chest.
+> Nhìn vào game phải thấy sáng, vui, có năng lượng ngay lập tức.
 
 ---
 
-# F. QUIZ CARD
+# 3. LUCKY WHEEL — FIX ICON POSITION
 
-Quiz card phải có:
+Lucky Wheel hiện tại có vấn đề:
 
-* depth
-* subtle border
-* shadow
-* highlight
-* clean hierarchy
+**Các icon trên từng segment không nằm đúng vị trí/không đồng đều khi wheel quay.**
 
-Không bo tròn quá mức.
+Hãy sửa lại implementation.
 
-Không làm card khổng lồ.
+## Quy tắc
 
----
+Mỗi segment phải có:
 
-# G. ANSWER BUTTONS
+* icon
+* label nếu có
 
-Normal:
+và tất cả phải nằm **đúng tâm/radial position của segment**.
 
-* clean
-* readable
+Khi wheel quay:
 
-Hover:
+**icon phải quay cùng segment.**
 
-* slight lift
-* subtle glow
+Không được:
 
-Press:
-
-* tiny scale down
-
-Selected:
-
-* strong feedback
-
-Correct:
-
-* satisfying success animation
-
-Wrong:
-
-* short shake + clear feedback
-
-Animation nhanh và responsive.
+* icon đứng yên trong khi segment quay
+* icon lệch tâm
+* icon bị trôi
+* khoảng cách icon không đều
+* icon nằm quá gần tâm
+* icon nằm quá sát mép
+* icon bị xoay sai hướng ngoài ý muốn
 
 ---
 
-# H. SCORE & RANKING
+## Cách triển khai mong muốn
 
-Score không chỉ đổi text.
+Không hard-code vị trí từng icon bằng pixel nếu có thể tránh.
 
-Khi score thay đổi:
+Hãy tính vị trí theo:
 
-`old score → counting animation → new score`
+```text
+segmentIndex
+segmentCount
+angle
+radius
+center
+```
 
-Ranking update:
+Ví dụ logic:
 
-* smooth movement
-* highlight
-* subtle glow
-* position transition
+```text
+angle = segmentIndex * segmentAngle + segmentAngle / 2
+```
 
-Không reset ranking ngoài gameplay logic hiện tại.
+Sau đó position icon theo radial coordinate.
 
----
+Mọi segment phải có:
 
-# I. LUCKY WHEEL — REDESIGN HOÀN TOÀN
-
-Lucky Wheel hiện tại đang xấu/lỗi.
-
-Không chỉ chỉnh vài CSS.
-
-Nếu cần, refactor/rewrite riêng component Lucky Wheel.
-
-## LOCKED STATE
-
-Khi chưa unlock:
-
-* chỉ có icon Lucky Wheel nhỏ ở góc.
-* không chiếm gameplay area.
-* không có Big Wheel.
-
-## UNLOCK STATE
-
-Khi unlock:
-
-Không chỉ hiện icon.
-
-Tạo một **major unlock moment**.
-
-Sequence:
-
-1. Icon xuất hiện.
-2. Scale-up.
-3. Glow.
-4. Pulse.
-5. Particle/sparkle burst.
-6. Hiện text:
-
-`LUCKY WHEEL UNLOCKED!`
-
-7. Nút:
-
-`JOIN IN`
-
-xuất hiện nổi bật.
-
-8. JOIN IN có subtle pulse.
-
-9. Sau khoảng 1.5–2.5 giây trở về trạng thái bình thường.
-
-Không che gameplay quá lâu.
+**khoảng cách angular bằng nhau.**
 
 ---
 
-# J. JOIN IN → BIG LUCKY WHEEL
+# 4. ICON ORIENTATION
 
-Khi người chơi bấm:
+Khi wheel quay:
 
-`JOIN IN`
+Icon phải giữ visual orientation hợp lý.
 
-mở một modal lớn ở trung tâm.
+Nếu thiết kế wheel yêu cầu icon luôn hướng về người chơi:
 
-Wheel phải là focal point.
+* counter-rotate icon theo wheel rotation.
 
-Thiết kế lại toàn bộ wheel:
+Nếu icon được thiết kế để xoay cùng wheel:
 
-* multiple rings
-* clear segments
-* polished colors
-* center hub
-* pointer
-* shadow
-* depth
-* subtle glow
-* highlight
-* premium appearance
+* giữ nguyên rotation relationship với segment.
 
-Wheel phải thực sự giống một **game wheel**, không phải một hình tròn CSS đơn giản.
+Chọn cách nhìn đẹp nhất nhưng phải **đồng nhất cho tất cả segment**.
 
-## SPIN
+Không để icon này một kiểu, icon kia một kiểu.
+
+---
+
+# 5. WHEEL SPIN ACCURACY
+
+Sau khi sửa icon position, kiểm tra lại toàn bộ spin calculation.
+
+Yêu cầu:
+
+```text
+visual segment
+=
+icon
+=
+logical reward
+=
+pointer result
+```
+
+Khi wheel dừng:
+
+Pointer phải chỉ chính xác segment đã được chọn.
+
+Không xảy ra:
+
+> nhìn trúng Clapping Hand nhưng logic lại trả Chest.
+
+Hoặc:
+
+> icon nhìn nằm ở segment A nhưng reward là segment B.
+
+Test nhiều lần với nhiều segment khác nhau.
+
+---
+
+# 6. Ô CHỨA MẢNH GHÉP — TO HƠN
+
+Phần chứa các **mảnh ghép/puzzle pieces** hiện tại hơi nhỏ.
+
+Hãy tăng kích thước khu vực chứa mảnh ghép.
+
+Mục tiêu:
+
+* pieces dễ nhìn hơn.
+* dễ phân biệt.
+* spacing thoải mái.
+* không bị chen chúc.
+* responsive.
+
+Tăng khoảng:
+
+**20–30% so với hiện tại**
+
+không cần phóng quá lớn.
+
+Nếu có container/grid:
+
+* tăng kích thước cell.
+* giữ alignment.
+* giữ khoảng cách đều.
+
+Không làm overflow.
+
+---
+
+# 7. RANKING / SCORE — NHỎ LẠI MỘT CHÚT
+
+Phần điểm/ranking hiện tại đang chiếm hơi nhiều visual attention.
+
+Hãy giảm nhẹ kích thước:
+
+* score number
+* ranking card
+* ranking padding
+* avatar/icon nếu cần
+
+Khoảng:
+
+**10–20% nhỏ hơn hiện tại**
+
+Không làm mất khả năng đọc.
+
+Mục tiêu visual hierarchy:
+
+```text
+Quiz / Puzzle
+      ↓
+Main interaction
+      ↓
+Reward objects
+      ↓
+Ranking / Score
+```
+
+Ranking vẫn phải dễ nhìn nhưng không được cạnh tranh với Lucky Wheel / Chest / Clapping Hand.
+
+---
+
+# 8. CLAPPING HAND — GIỮ NGUYÊN EFFECT HIỆN TẠI
+
+CỰC KỲ QUAN TRỌNG:
+
+Khi quay Lucky Wheel và kết quả là:
+
+**CLAPPING HAND**
+
+hãy **GIỮ NGUYÊN hiệu ứng vỗ tay hiện tại** nếu nó đang hoạt động tốt.
+
+Không redesign lại animation vỗ tay.
+
+Không thay bằng animation mới.
+
+Không xóa particle/effect hiện tại.
+
+Không thay đổi timing trừ khi thực sự cần.
+
+---
+
+# 9. CLAPPING HAND — EXIT BUTTON
+
+Khi trigger Clapping Hand:
+
+Hiện:
+
+**CLAPPING HAND**
+
+và có nút:
+
+**X**
+
+để exit/đóng.
 
 Flow:
 
-`Click SPIN`
-→ acceleration
-→ fast spin
-→ deceleration
-→ final stop
-→ tiny bounce
-→ reward reveal
-
-Yêu cầu cực kỳ quan trọng:
-
-**Visual wheel phải dừng đúng segment mà logic reward chọn.**
-
-Không được xảy ra:
-
-* wheel dừng A nhưng reward là B
-* pointer lệch
-* segment bị lệch
-* text ngược/khó đọc
-* wheel overflow
-* spin spam
-
-Trong lúc spinning:
-
-`SPIN` disabled.
-
-Sau khi stop:
-
-Reward reveal.
-
----
-
-# K. BIG CHEST — TREASURE CHEST THỰC SỰ
-
-Big Chest hiện tại không đạt yêu cầu.
-
-Không được dùng:
-
-* gift box
-* emoji gift
-* square box đơn giản
-* một div có border rồi gọi là chest
-
-Tôi muốn **TREASURE CHEST** thật sự.
-
-Visual cần có:
-
-* wooden body
-* curved lid
-* metal bands
-* metal corners/details
-* lock
-* depth
-* highlight
-* shadow
-* inner darkness
-* inner glow
-* premium game-art feeling
-
-Silhouette phải nhìn ra ngay là:
-
-**Treasure Chest**
-
-Nếu cần, có thể sử dụng SVG/CSS/asset phù hợp.
-
----
-
-# L. BIG CHEST — CLICK TO OPEN
-
-Đây là interaction bắt buộc.
-
-Khi Big Chest xuất hiện:
-
-Chest ở trạng thái:
-
-`IDLE`
-
-Hiển thị một CTA rõ ràng:
-
-**CLICK TO OPEN**
-
-Có thể đặt text phía dưới chest.
-
-## IDLE ANIMATION
-
-Chest không đứng yên hoàn toàn.
-
-Có:
-
-* subtle floating
-* breathing
-* tiny glow
-* occasional highlight
-
-Nhưng rất nhẹ.
-
-## HOVER
-
-Khi hover:
-
-* chest scale up nhẹ
-* glow tăng
-* cursor pointer
-* CTA sáng hơn
-
-## CLICK
-
-Khi người chơi click chest:
-
-**không mở ngay.**
-
-Sequence:
-
-### Phase 1 — Anticipation
-
-~0.4–0.6s
-
-* chest shake nhẹ
-* glow tăng
-* lock reacts
-
-### Phase 2 — Charge
-
-~0.4–0.7s
-
-* inner light tăng
-* glow mạnh dần
-* particles bắt đầu xuất hiện
-
-### Phase 3 — Open
-
-~0.6–0.8s
-
-* lock releases
-* lid thực sự mở bằng animation
-* ánh sáng phát ra từ bên trong
-
-### Phase 4 — Reward Reveal
-
-~0.5–1s
-
-* light burst
-* particles
-* reward xuất hiện từ trong chest
-* reward float nhẹ lên
-
-Tổng animation khoảng:
-
-**2–3 giây**
-
-Không quá nhanh.
-
-Không quá dài.
-
----
-
-# M. CHEST CLICK SAFETY
-
-Sau khi click:
-
-* disable interaction.
-* không thể click spam.
-* không thể trigger nhiều reward.
-* không thể mở nhiều chest cùng lúc.
-* reward chỉ được resolve **một lần**.
-
-State machine nên rõ ràng, ví dụ:
-
 ```text
-idle
-hover
-opening
-revealing
-opened
+Wheel
+ ↓
+Clapping Hand reward
+ ↓
+Existing clapping animation
+ ↓
+"CLAPPING HAND"
++
+X button
 ```
 
-Không dùng nhiều boolean rời rạc nếu có thể gây race condition.
+Nút X:
+
+* rõ ràng
+* dễ click
+* nằm ở góc hợp lý của effect/modal.
+* có hover state.
+* click → đóng Clapping Hand.
+* không reset ranking.
+* không reset quiz.
+* không trigger reward lần nữa.
+
+Không để X che mất animation chính.
 
 ---
 
-# N. BIG CHEST SIZE
+# 10. BIGGER CLAPPING HAND — CŨNG PHẢI CÓ X
 
-Sau redesign:
+Có một trạng thái **BIGGER CLAPPING HAND**.
 
-Big Chest vẫn phải **khoảng 50% kích thước so với phiên bản ban đầu**.
+Khi trigger Bigger Clapping Hand:
 
-Không được redesign xong rồi lại phóng chest quá lớn.
+**GIỮ NGUYÊN EFFECT HIỆN TẠI.**
 
-Chest phải:
+Không redesign animation nếu không cần.
 
-* compact
-* detailed
-* beautiful
-* easy to see
-* centered
+Nhưng bổ sung:
 
-Responsive desktop/mobile.
+```text
+BIGGER CLAPPING HAND
++
+X
+```
 
----
+Nút X có cùng behavior:
 
-# O. REWARD REVEAL
-
-Reward sau khi chest mở:
-
-* xuất hiện rõ ràng
-* có glow
-* có small scale/bounce
-* có particle nhẹ
-* không che ranking
-* không overflow
-
-Nếu reward là điểm:
-
-Có counting animation.
-
-Nếu reward là item:
-
-Có reveal animation.
+* click → exit
+* không reset game
+* không reset ranking
+* không trigger lại effect
+* không mất reward đã nhận
 
 ---
 
-# P. PARTICLE SYSTEM
+# 11. CLAPPING MODAL / OVERLAY
 
-Dùng particle có kiểm soát cho:
+Clapping Hand và Bigger Clapping Hand nên có một overlay hợp lý để focus vào effect.
 
-* Lucky Wheel unlock
-* Wheel reward
-* Correct answer
-* Chest opening
-* Reward reveal
-* Ranking increase
+Nhưng:
 
-Không để hàng trăm DOM elements chạy liên tục.
+* không làm background đen hoàn toàn.
+* không che toàn bộ visual game quá nặng.
+* giữ cảm giác celebration.
 
-Ưu tiên performance.
+Có thể dùng:
 
-Nếu project đã có animation/particle library thì tái sử dụng.
+* subtle backdrop blur
+* transparent overlay
+* glow
+* particles
 
----
+Animation close:
 
-# Q. MOTION LANGUAGE
-
-Chuẩn hóa animation timing:
-
-### Micro
-
-100–250ms
-
-### UI
-
-250–450ms
-
-### Reward
-
-700–1500ms
-
-### Major celebration
-
-1500–3000ms
-
-Ưu tiên:
-
-`transform`
-`opacity`
-
-Không animate các property gây layout thrashing nếu không cần.
-
-Không dùng linear cho mọi animation.
+* quick fade/scale-out
+* khoảng 200–350ms.
 
 ---
 
-# R. RESPONSIVE
+# 12. KHÔNG PHÁ FLOW HIỆN TẠI
 
-Desktop:
+Giữ nguyên:
 
-* compact UI
-* wheel lớn khi JOIN IN
-* chest rõ nhưng không oversized
-
-Mobile:
-
-* tự scale
-* không overflow
-* buttons dễ click
-* text readable
-* modal fit viewport
-
-Không sử dụng `transform: scale()` như giải pháp responsive duy nhất.
-
----
-
-# S. PERFORMANCE
-
-Visual đẹp nhưng phải mượt.
-
-Tránh:
-
-* excessive blur
-* excessive box-shadow animation
-* hundreds of DOM particles
-* layout-triggering animations
-* unnecessary rerenders
-
-Kiểm tra React rendering nếu cần.
-
----
-
-# T. PRESERVE EXISTING GAMEPLAY
-
-Không phá các flow hiện tại:
-
+* Quiz
+* 20 câu
 * random score
 * ranking
-* không bắt buộc trả lời
-* quiz flow
-* Clapping Hand
-* quay lần 1 → Clapping Hand
-* quay lần 2 → Chest
-* Lucky Wheel logic
+* Lucky Wheel unlock
+* JOIN IN
+* Lucky Wheel spin
+* Big Chest
+* Click to Open
+* Clapping Hand effect
+* Bigger Clapping Hand
 * reward logic
 
-Chỉ thay đổi những gì được yêu cầu.
-
-Không thêm backend.
-
-Không thêm database.
+Chỉ chỉnh những phần được yêu cầu.
 
 ---
 
-# U. VISUAL QA — BẮT BUỘC
+# 13. FINAL VISUAL HIERARCHY
 
-Nếu environment có browser/screenshot capability:
+Sau các thay đổi, visual hierarchy mong muốn:
 
-Hãy tự chạy game và inspect trực tiếp.
+### Background
 
-Kiểm tra tối thiểu:
+Sáng + energetic nhưng nhẹ.
+
+### Main Quiz / Puzzle
+
+Dễ nhìn nhất.
+
+### Lucky Wheel / Chest
+
+Reward elements nổi bật.
+
+### Clapping Hand
+
+Celebration state nổi bật nhất khi trigger.
+
+### Ranking
+
+Nhỏ gọn hơn, không tranh spotlight.
+
+---
+
+# 14. VISUAL QA BẮT BUỘC
+
+Nếu có browser/screenshot capability, kiểm tra:
 
 1. Initial screen
-2. Quiz
-3. Answer selected
-4. Correct answer
-5. Ranking update
+2. Background
+3. Quiz
+4. Puzzle pieces
+5. Ranking
 6. Lucky Wheel locked
-7. Lucky Wheel unlock
-8. JOIN IN
-9. Big Lucky Wheel
-10. Wheel spinning
-11. Wheel reward
-12. Big Chest idle
-13. Hover chest
-14. Click to Open
-15. Chest opening
-16. Reward reveal
-17. Final ranking
+7. Lucky Wheel unlocked
+8. Big Lucky Wheel
+9. Wheel spinning
+10. Icon alignment
+11. Wheel stops on each type of reward
+12. Clapping Hand
+13. Clapping Hand + X
+14. Bigger Clapping Hand
+15. Bigger Clapping Hand + X
+16. Big Chest
+17. Chest opening
+18. Reward reveal
+19. Music on
+20. Music muted
 
-Ở mỗi state tự kiểm tra:
+Đặc biệt kiểm tra:
 
-* Có quá to không?
-* Có quá nhỏ không?
-* Có overflow không?
-* Có element lệch không?
-* Animation có giật không?
-* Wheel có đúng segment không?
-* Chest có thực sự giống treasure chest không?
-* CTA có rõ không?
-* UI có quá nhiều glow không?
-* Reward có đủ nổi bật không?
-
-Nếu thấy xấu hoặc lỗi:
-
-**TỰ SỬA VÀ TEST LẠI.**
-
-Không kết thúc chỉ vì code compile.
-
----
-
-# V. CODE QUALITY
-
-Giữ component architecture sạch.
-
-Không tạo:
-
-* duplicate components
-* duplicate state
-* magic numbers rải rác
-* CSS hack
-* dead code
-
-Tách riêng nếu cần:
+### Wheel
 
 ```text
-Quiz
-LuckyWheel
-LuckyWheelModal
-TreasureChest
-RewardReveal
-Ranking
-Particles
+segment
+↓
+icon
+↓
+pointer
+↓
+logical reward
 ```
 
-Animation constants/design tokens nên được tổ chức rõ ràng.
+phải luôn đồng bộ.
 
 ---
 
-# W. FINAL VALIDATION
+# 15. QUALITY BAR
 
-Sau implementation chạy:
+Không chỉ cần:
 
-1. Typecheck
-2. Lint
-3. Tests
-4. Production build
+> "Code chạy."
 
-Nếu có lỗi:
+Tôi muốn:
 
-**tự sửa → chạy lại.**
+> **UI đẹp + sáng + energetic + animation mượt + wheel chính xác + reward rõ + không lỗi interaction.**
 
-Nếu có browser:
+Nếu screenshot cho thấy:
 
-**visual QA → sửa → screenshot lại → QA lần cuối.**
+* icon lệch
+* wheel méo
+* background quá tối
+* ranking quá lớn
+* puzzle pieces quá nhỏ
+* X button khó thấy
+* animation bị cắt
+* modal overflow
 
-Cuối cùng chỉ báo cáo ngắn:
+→ tự sửa tiếp.
 
-* Files changed
-* 20-question data location
-* UI scale changes
-* Lucky Wheel redesign
-* Unlock animation
-* Big Chest redesign
-* Click-to-Open flow
-* Reward animation
-* Tests/typecheck/lint/build
-* Những gì đã verify thực tế
+Sau khi hoàn thành:
 
-## FINAL QUALITY BAR
+* typecheck
+* lint
+* test
+* production build
 
-Không chấp nhận kết quả kiểu:
+và tự fix mọi lỗi phát sinh.
 
-> "CSS đã đẹp hơn."
-
-Tôi muốn kết quả cuối cùng nhìn như **một mini game được thiết kế có chủ đích**, với:
-
-**Clean UI → Exciting interaction → Strong unlock → Beautiful wheel → Real treasure chest → Satisfying click-to-open → Reward celebration.**
-
-Nếu một component vẫn nhìn giống placeholder/demo/template thì tiếp tục làm lại cho đến khi đạt chất lượng visual phù hợp.
+Cuối cùng báo cáo ngắn gọn những gì đã thay đổi và trạng thái verification.

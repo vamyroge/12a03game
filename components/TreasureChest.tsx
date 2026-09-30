@@ -73,9 +73,23 @@ export default function TreasureChest({ onClose }: TreasureChestProps) {
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
-      className="fixed inset-0 bg-black/90 backdrop-blur-md flex items-center justify-center z-50"
+      className="fixed inset-0 bg-black/70 backdrop-blur-md flex items-center justify-center z-50"
       style={{ backdropFilter: 'blur(8px)' }}
     >
+      {/* Close button for opened state */}
+      {state === 'opened' && (
+        <motion.button
+          initial={{ opacity: 0, scale: 0 }}
+          animate={{ opacity: 1, scale: 1 }}
+          onClick={onClose}
+          className="absolute top-8 right-8 w-12 h-12 rounded-full bg-white/10 hover:bg-white/20 backdrop-blur-md border-2 border-white/30 flex items-center justify-center text-white text-2xl font-bold transition-all hover:scale-110 z-10"
+          whileHover={{ scale: 1.1 }}
+          whileTap={{ scale: 0.9 }}
+        >
+          ×
+        </motion.button>
+      )}
+
       <div className="relative flex flex-col items-center">
         {/* Click to Open CTA */}
         <AnimatePresence>

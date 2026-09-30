@@ -16,9 +16,9 @@ export default function PuzzleGrid({ imageUrl, openedTiles, onTileClick, disable
 
   return (
     <div className="relative">
-      {/* Main puzzle container - 50% scale */}
+      {/* Main puzzle container - increased by 25% (500x400 from 400x320) */}
       <div 
-        className="relative w-[400px] h-[320px] mx-auto rounded-xl overflow-hidden shadow-2xl border-2 border-white/10"
+        className="relative w-[500px] h-[400px] mx-auto rounded-xl overflow-hidden shadow-2xl border-2 border-white/20"
         style={{
           backgroundImage: `url(${imageUrl})`,
           backgroundSize: 'cover',

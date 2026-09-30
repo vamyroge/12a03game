@@ -223,11 +223,11 @@ export default function Home() {
 
   return (
     <div className="min-h-screen relative overflow-hidden">
-      {/* Deep dark background with gradients */}
-      <div className="fixed inset-0 bg-gradient-to-br from-[#0a0118] via-[#150828] to-[#1f0d38]" />
+      {/* Bright energetic background with soft gradients */}
+      <div className="fixed inset-0 bg-gradient-to-br from-blue-50 via-purple-50 to-pink-50" />
 
-      {/* Ambient light blobs */}
-      <div className="fixed inset-0 opacity-30">
+      {/* Ambient light blobs - colorful and energetic */}
+      <div className="fixed inset-0 opacity-40">
         <motion.div
           animate={{
             x: [0, 100, 0],
@@ -235,7 +235,7 @@ export default function Home() {
             scale: [1, 1.2, 1],
           }}
           transition={{ duration: 20, repeat: Infinity, ease: 'easeInOut' }}
-          className="absolute top-20 left-20 w-96 h-96 bg-purple-600/30 rounded-full blur-3xl"
+          className="absolute top-20 left-20 w-96 h-96 bg-gradient-to-br from-blue-300 to-cyan-300 rounded-full blur-3xl"
         />
         <motion.div
           animate={{
@@ -244,7 +244,7 @@ export default function Home() {
             scale: [1, 1.3, 1],
           }}
           transition={{ duration: 25, repeat: Infinity, ease: 'easeInOut' }}
-          className="absolute bottom-20 right-20 w-80 h-80 bg-blue-600/30 rounded-full blur-3xl"
+          className="absolute bottom-20 right-20 w-80 h-80 bg-gradient-to-br from-purple-300 to-pink-300 rounded-full blur-3xl"
         />
         <motion.div
           animate={{
@@ -253,21 +253,25 @@ export default function Home() {
             scale: [1, 1.15, 1],
           }}
           transition={{ duration: 18, repeat: Infinity, ease: 'easeInOut' }}
-          className="absolute top-1/2 left-1/2 w-72 h-72 bg-cyan-600/20 rounded-full blur-3xl"
+          className="absolute top-1/2 left-1/2 w-72 h-72 bg-gradient-to-br from-yellow-300 to-orange-300 rounded-full blur-3xl"
         />
       </div>
 
-      {/* Subtle particles */}
-      <div className="fixed inset-0 opacity-20 pointer-events-none">
+      {/* Subtle floating particles */}
+      <div className="fixed inset-0 opacity-30 pointer-events-none">
         {particles.map((particle, i) => (
           <motion.div
             key={i}
-            className="absolute rounded-full bg-white"
-            style={{ width: particle.size, height: particle.size }}
+            className="absolute rounded-full"
+            style={{ 
+              width: particle.size, 
+              height: particle.size,
+              background: 'linear-gradient(135deg, #60a5fa, #a78bfa)',
+            }}
             animate={{
               x: [particle.x1, particle.x2],
               y: [particle.y1, particle.y2],
-              opacity: [0, 0.6, 0],
+              opacity: [0, 0.8, 0],
             }}
             transition={{
               duration: particle.duration,
@@ -285,7 +289,7 @@ export default function Home() {
         <motion.h1
           initial={{ y: -30, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
-          className="text-4xl font-black text-center bg-gradient-to-r from-yellow-400 via-pink-400 to-purple-400 bg-clip-text text-transparent drop-shadow-lg"
+          className="text-4xl font-black text-center bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 bg-clip-text text-transparent drop-shadow-lg"
         >
           WHO IS THIS?
         </motion.h1>

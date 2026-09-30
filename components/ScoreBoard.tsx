@@ -29,9 +29,9 @@ export default function ScoreBoard({ scores, currentGroup }: ScoreBoardProps) {
   const sortedGroups = ([1, 2, 3, 4] as GroupId[]).sort((a, b) => scores[b] - scores[a]);
 
   return (
-    <div className="w-full max-w-2xl">
-      {/* Compact scoreboard - 50% scale */}
-      <div className="grid grid-cols-4 gap-2">
+    <div className="w-full max-w-xl">
+      {/* Compact scoreboard - reduced by 15% */}
+      <div className="grid grid-cols-4 gap-1.5">
         {([1, 2, 3, 4] as GroupId[]).map((groupId) => {
           const colors = GROUP_COLORS[groupId];
           const isActive = currentGroup === groupId;
@@ -55,8 +55,8 @@ export default function ScoreBoard({ scores, currentGroup }: ScoreBoardProps) {
                   : { duration: 0.3 }
               }
               className={`
-                relative rounded-xl p-3 backdrop-blur-sm
-                ${isActive ? 'ring-2 ring-white shadow-xl' : 'shadow-md'}
+                relative rounded-lg p-2 backdrop-blur-sm
+                ${isActive ? 'ring-2 ring-white shadow-lg' : 'shadow-md'}
                 transition-all duration-300
               `}
               style={{
@@ -71,7 +71,7 @@ export default function ScoreBoard({ scores, currentGroup }: ScoreBoardProps) {
               <motion.div
                 initial={{ scale: 0 }}
                 animate={{ scale: 1 }}
-                className="absolute -top-2 -right-2 w-6 h-6 rounded-full bg-gradient-to-br from-yellow-400 to-orange-500 flex items-center justify-center text-xs font-black text-white shadow-lg"
+                className="absolute -top-1.5 -right-1.5 w-5 h-5 rounded-full bg-gradient-to-br from-yellow-400 to-orange-500 flex items-center justify-center text-[10px] font-black text-white shadow-lg"
               >
                 {rank}
               </motion.div>
@@ -95,12 +95,12 @@ export default function ScoreBoard({ scores, currentGroup }: ScoreBoardProps) {
               )}
 
               {/* Group label */}
-              <div className="text-xs font-bold text-white/70 mb-1">
+              <div className="text-[10px] font-bold text-white/70 mb-0.5">
                 Group {groupId}
               </div>
 
               {/* Score with counting animation */}
-              <div className="text-2xl font-black text-white">
+              <div className="text-xl font-black text-white">
                 <AnimatedScore score={scores[groupId]} />
               </div>
 
@@ -109,7 +109,7 @@ export default function ScoreBoard({ scores, currentGroup }: ScoreBoardProps) {
                 <motion.div
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
-                  className="text-[10px] font-bold text-yellow-300 mt-1"
+                  className="text-[9px] font-bold text-yellow-300 mt-0.5"
                 >
                   YOUR TURN
                 </motion.div>
@@ -123,14 +123,14 @@ export default function ScoreBoard({ scores, currentGroup }: ScoreBoardProps) {
       <motion.div
         initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
-        className="mt-3 text-center"
+        className="mt-2 text-center"
       >
-        <div className="inline-flex items-center gap-2 px-3 py-1 bg-white/5 backdrop-blur-sm rounded-full border border-white/10">
-          <span className="text-xs text-white/60">Leader:</span>
-          <span className={`text-sm font-bold ${GROUP_COLORS[sortedGroups[0]].text}`}>
+        <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 bg-white/5 backdrop-blur-sm rounded-full border border-white/10">
+          <span className="text-[10px] text-white/60">Leader:</span>
+          <span className={`text-xs font-bold ${GROUP_COLORS[sortedGroups[0]].text}`}>
             Group {sortedGroups[0]}
           </span>
-          <span className="text-sm font-black text-white">
+          <span className="text-xs font-black text-white">
             {scores[sortedGroups[0]]} pts
           </span>
         </div>
