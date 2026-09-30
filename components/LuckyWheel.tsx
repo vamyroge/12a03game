@@ -1,7 +1,7 @@
 'use client';
 
 import { motion, useAnimation, AnimatePresence } from 'framer-motion';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { sounds } from '@/lib/audio';
 
 interface LuckyWheelProps {
@@ -51,10 +51,12 @@ export default function LuckyWheel({ unlocked, spinCount, onSpin }: LuckyWheelPr
   const [showBigWheel, setShowBigWheel] = useState(false);
   const [showUnlockCelebration, setShowUnlockCelebration] = useState(false);
   const controls = useAnimation();
+  const hasShownUnlock = useRef(false);
 
-  // Major unlock moment
+  // Major unlock moment - only trigger once
   useEffect(() => {
-    if (unlocked && !showUnlockCelebration) {
+    if (unlocked && !hasShownUnlock.current) {
+      hasShownUnlock.current = true;
       setShowUnlockCelebration(true);
       sounds.unlock(); // Play sound once when unlocking
 
@@ -65,7 +67,7 @@ export default function LuckyWheel({ unlocked, spinCount, onSpin }: LuckyWheelPr
 
       return () => clearTimeout(hideTimer);
     }
-  }, [unlocked]); // Remove showUnlockCelebration from dependencies to prevent loop
+  }, [unlocked]);
 
   const handleSpin = async () => {
     if (spinning || !unlocked || spinCount >= 2) return;
