@@ -55,19 +55,17 @@ export default function LuckyWheel({ unlocked, spinCount, onSpin }: LuckyWheelPr
   // Major unlock moment
   useEffect(() => {
     if (unlocked && !showUnlockCelebration) {
-      const timer = setTimeout(() => {
-        setShowUnlockCelebration(true);
-        sounds.unlock();
+      setShowUnlockCelebration(true);
+      sounds.unlock(); // Play sound once when unlocking
 
-        // Hide celebration after 2 seconds
-        setTimeout(() => {
-          setShowUnlockCelebration(false);
-        }, 2000);
-      }, 0);
+      // Hide celebration after 2 seconds
+      const hideTimer = setTimeout(() => {
+        setShowUnlockCelebration(false);
+      }, 2000);
 
-      return () => clearTimeout(timer);
+      return () => clearTimeout(hideTimer);
     }
-  }, [unlocked, showUnlockCelebration]);
+  }, [unlocked]); // Remove showUnlockCelebration from dependencies to prevent loop
 
   const handleSpin = async () => {
     if (spinning || !unlocked || spinCount >= 2) return;
