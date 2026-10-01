@@ -10,6 +10,7 @@ interface QuestionModalProps {
   onAnswer: (answer: 'A' | 'B' | 'C' | 'D') => void;
   selectedAnswer: string | null;
   isCorrect: boolean | null;
+  wrongAnswerPenalty: 5 | 10;
   freePassAvailable: boolean;
   onUseFreePass: () => void;
 }
@@ -20,6 +21,7 @@ export default function QuestionModal({
   onAnswer,
   selectedAnswer,
   isCorrect,
+  wrongAnswerPenalty,
   freePassAvailable,
   onUseFreePass,
 }: QuestionModalProps) {
@@ -231,7 +233,9 @@ export default function QuestionModal({
                   ${isCorrect ? 'text-green-300' : 'text-red-300'}
                 `}
               >
-                {isCorrect ? '🎉 Correct! Getting reward...' : '❌ Wrong answer! -10 points'}
+                {isCorrect
+                  ? '🎉 Correct! Getting reward...'
+                  : `❌ Wrong answer! -${wrongAnswerPenalty} points`}
               </motion.div>
             )}
           </div>

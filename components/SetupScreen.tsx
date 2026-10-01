@@ -11,9 +11,28 @@ interface SetupScreenProps {
   onStart: (imageUrl: string, questions: Question[]) => void;
 }
 
+type QuestionFileItem = {
+  id: number;
+  question: string;
+  options: string[];
+  correctAnswer: number;
+};
+
+const normalizeQuestions = (items: QuestionFileItem[]): Question[] => items.map((item) => ({
+  id: item.id,
+  question: item.question,
+  options: {
+    A: item.options[0],
+    B: item.options[1],
+    C: item.options[2],
+    D: item.options[3],
+  },
+  correctAnswer: ['A', 'B', 'C', 'D'][item.correctAnswer] as Question['correctAnswer'],
+}));
+
 export default function SetupScreen({ onStart }: SetupScreenProps) {
   const [imageUrl, setImageUrl] = useState<string | null>(null);
-  const [questions, setQuestions] = useState<Question[]>(defaultQuestions as Question[]);
+  const [questions, setQuestions] = useState<Question[]>(normalizeQuestions(defaultQuestions));
   const [error, setError] = useState<string>('');
 
   const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -41,7 +60,11 @@ export default function SetupScreen({ onStart }: SetupScreenProps) {
           return;
         }
 
-        setQuestions(data);
+        setQuestions(
+          Array.isArray(data) && Array.isArray(data[0]?.options)
+            ? normalizeQuestions(data as QuestionFileItem[])
+            : data,
+        );
         setError('');
         sounds.correct();
       } catch {
@@ -121,7 +144,7 @@ export default function SetupScreen({ onStart }: SetupScreenProps) {
 
           {/* Questions */}
           <div className="bg-white/5 rounded-2xl p-8 border border-white/10">
-            <h2 className="text-3xl font-bold text-white mb-4">❓ Questions ({questions.length}/16)</h2>
+            <h2 className="text-3xl font-bold text-white mb-4">❓ Questions ({questions.length}/20)</h2>
             <div className="flex gap-4">
               <button
                 onClick={handleExportQuestions}

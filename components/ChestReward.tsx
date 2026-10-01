@@ -191,19 +191,6 @@ export default function ChestReward({ onClose }: ChestRewardProps) {
                 ))}
               </div>
 
-              {/* Rays - adjusted for smaller size */}
-              {Array.from({ length: 12 }).map((_, i) => (
-                <motion.div
-                  key={i}
-                  initial={{ scale: 0, opacity: 0 }}
-                  animate={{ scale: 1.5, opacity: [0, 1, 0] }}
-                  transition={{ duration: 1, delay: 0.2, repeat: Infinity }}
-                  className="absolute left-1/2 top-1/2 w-2 h-32 bg-gradient-to-t from-yellow-400 to-transparent origin-bottom"
-                  style={{
-                    transform: `rotate(${i * 30}deg) translateX(-50%)`,
-                  }}
-                />
-              ))}
             </>
           )}
         </motion.div>

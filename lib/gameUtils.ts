@@ -1,18 +1,22 @@
 import { RewardType } from './types';
 
 export const REWARD_POOL: RewardType[] = [
+  { type: 'points', value: -5 },
+  { type: 'points', value: -10 },
   { type: 'points', value: 10 },
-  { type: 'points', value: 10 },
-  { type: 'points', value: 20 },
   { type: 'points', value: 20 },
   { type: 'points', value: 30 },
+  { type: 'points', value: 40 },
   { type: 'points', value: 50 },
-  { type: 'points', value: -10 },
-  { type: 'points', value: -20 },
   { type: 'freePass' },
   { type: 'doubleNext' },
   { type: 'openExtra' },
 ];
+
+export const getRandomPointReward = (): Extract<RewardType, { type: 'points' }> => {
+  const values = [-5, -10, 10, 20, 30, 40, 50];
+  return { type: 'points', value: values[Math.floor(Math.random() * values.length)] };
+};
 
 export const getRandomReward = (): RewardType => {
   return REWARD_POOL[Math.floor(Math.random() * REWARD_POOL.length)];
@@ -48,6 +52,18 @@ export const validateQuestions = (data: unknown): { valid: boolean; error?: stri
     if (!q.options || typeof q.options !== 'object') {
       return { valid: false, error: `Question ${i + 1}: Missing options` };
     }
+
+    if (Array.isArray(q.options)) {
+      if (q.options.length !== 4 || !q.options.every((option: unknown) => typeof option === 'string')) {
+        return { valid: false, error: `Question ${i + 1}: Must have four text options` };
+      }
+
+      if (typeof q.correctAnswer !== 'number' || q.correctAnswer < 0 || q.correctAnswer > 3) {
+        return { valid: false, error: `Question ${i + 1}: correctAnswer must be between 0 and 3` };
+      }
+
+      continue;
+    }
     
     if (!q.options.A || !q.options.B || !q.options.C || !q.options.D) {
       return { valid: false, error: `Question ${i + 1}: Must have options A, B, C, and D` };
@@ -66,7 +82,7 @@ export const formatReward = (reward: RewardType): string => {
     return reward.value > 0 ? `+${reward.value}` : `${reward.value}`;
   }
   if (reward.type === 'freePass') return 'FREE PASS';
-  if (reward.type === 'doubleNext') return 'DOUBLE NEXT';
+  if (reward.type === 'doubleNext') return 'DOUBLE POINT';
   if (reward.type === 'openExtra') return 'OPEN EXTRA';
   return '';
 };

@@ -61,10 +61,9 @@ export default function TreasureChest({ onClose }: TreasureChestProps) {
       sounds.celebration();
     }, 2500);
 
-    // Phase 4: Close after reward shown
+    // Keep the bigger reward open until the player closes it.
     setTimeout(() => {
       setState('opened');
-      onClose();
     }, 5500);
   };
 
@@ -76,8 +75,8 @@ export default function TreasureChest({ onClose }: TreasureChestProps) {
       className="fixed inset-0 bg-black/70 backdrop-blur-md flex items-center justify-center z-50"
       style={{ backdropFilter: 'blur(8px)' }}
     >
-      {/* Close button for opened state */}
-      {state === 'opened' && (
+      {/* Close button once the reward is fully revealed */}
+      {(state === 'revealing' || state === 'opened') && (
         <motion.button
           initial={{ opacity: 0, scale: 0 }}
           animate={{ opacity: 1, scale: 1 }}
@@ -268,7 +267,7 @@ export default function TreasureChest({ onClose }: TreasureChestProps) {
 
         {/* Light burst when opening */}
         <AnimatePresence>
-          {state === 'revealing' && (
+          {(state === 'revealing' || state === 'opened') && (
             <>
               <motion.div
                 initial={{ scale: 0, opacity: 1 }}
@@ -280,28 +279,13 @@ export default function TreasureChest({ onClose }: TreasureChestProps) {
                   background: 'radial-gradient(circle, rgba(255, 215, 0, 0.8), transparent 60%)',
                 }}
               />
-              {/* Light rays */}
-              {Array.from({ length: 12 }).map((_, i) => (
-                <motion.div
-                  key={i}
-                  initial={{ scale: 0, opacity: 0 }}
-                  animate={{ scale: 2, opacity: [0, 1, 0] }}
-                  transition={{ duration: 1, delay: 0.2, repeat: 2 }}
-                  className="absolute w-1 h-24 bg-gradient-to-t from-yellow-400 to-transparent origin-bottom"
-                  style={{
-                    top: '50%',
-                    left: '50%',
-                    transform: `rotate(${i * 30}deg) translateX(-50%)`,
-                  }}
-                />
-              ))}
             </>
           )}
         </AnimatePresence>
 
         {/* Reward reveal */}
         <AnimatePresence>
-          {state === 'revealing' && (
+          {(state === 'revealing' || state === 'opened') && (
             <motion.div
               initial={{ y: 50, opacity: 0, scale: 0 }}
               animate={{ y: -60, opacity: 1, scale: 1 }}
@@ -310,18 +294,26 @@ export default function TreasureChest({ onClose }: TreasureChestProps) {
               className="absolute top-0 text-center"
             >
               <motion.div
-                animate={{ rotate: [0, 5, -5, 5, 0] }}
-                transition={{ duration: 0.5, repeat: Infinity }}
+                animate={{ rotate: [0, 5, -5, 5, 0], opacity: [1, 0.45, 1] }}
+                transition={{ duration: 0.9, repeat: Infinity }}
                 className="text-7xl mb-2"
               >
                 👏👏👏
               </motion.div>
-              <div className="text-3xl font-black text-yellow-300 drop-shadow-lg whitespace-nowrap">
+              <motion.div
+                animate={{ opacity: [1, 0.35, 1] }}
+                transition={{ duration: 0.9, repeat: Infinity }}
+                className="text-3xl font-black text-yellow-300 drop-shadow-lg whitespace-nowrap"
+              >
                 BIGGER CLAPPING HAND!
-              </div>
-              <div className="text-base font-bold text-white/80 mt-2">
+              </motion.div>
+              <motion.div
+                animate={{ opacity: [1, 0.35, 1] }}
+                transition={{ duration: 0.9, repeat: Infinity }}
+                className="text-base font-bold text-white/80 mt-2"
+              >
                 Everyone clap louder! 🎉
-              </div>
+              </motion.div>
             </motion.div>
           )}
         </AnimatePresence>

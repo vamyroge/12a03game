@@ -131,24 +131,6 @@ export default function CelebrationModal({ result, onClose }: CelebrationModalPr
           ))}
         </div>
 
-        {/* Light rays */}
-        {result === 'BIG_CHEST' && (
-          <div className="absolute inset-0 pointer-events-none">
-            {Array.from({ length: 12 }).map((_, i) => (
-              <motion.div
-                key={i}
-                initial={{ scale: 0, opacity: 0 }}
-                animate={{ scale: 2, opacity: [0, 0.6, 0] }}
-                transition={{ duration: 1.5, delay: 0.2, repeat: Infinity }}
-                className="absolute left-1/2 top-1/2 w-1 h-40 bg-gradient-to-t from-yellow-400 to-transparent origin-bottom"
-                style={{
-                  transform: `rotate(${i * 30}deg) translateX(-50%)`,
-                }}
-              />
-            ))}
-          </div>
-        )}
-
         {/* Glow effect */}
         <motion.div
           animate={{

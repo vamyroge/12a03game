@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Question, GroupId, GamePhase, RewardType } from '@/lib/types';
-import { getRandomReward } from '@/lib/gameUtils';
+import { getRandomReward, getRandomPointReward } from '@/lib/gameUtils';
 import { sounds, resumeAudioContext } from '@/lib/audio';
 import { QUIZ_CONFIG } from '@/data/quizData';
 
@@ -15,6 +15,7 @@ import LuckyWheel from '@/components/LuckyWheel';
 import TreasureChest from '@/components/TreasureChest';
 import CelebrationModal from '@/components/CelebrationModal';
 import AudioControls from '@/components/AudioControls';
+import MusicControl from '@/components/MusicControl';
 import GameControls from '@/components/GameControls';
 
 export default function Home() {
@@ -24,15 +25,16 @@ export default function Home() {
   const [currentGroup, setCurrentGroup] = useState<GroupId>(1);
   const [currentTileIndex, setCurrentTileIndex] = useState<number | null>(null);
   const [openedTiles, setOpenedTiles] = useState<Set<number>>(new Set());
+  const [revealingTiles, setRevealingTiles] = useState<number[]>([]);
   const [scores, setScores] = useState<Record<GroupId, number>>({ 1: 0, 2: 0, 3: 0, 4: 0 });
   const [selectedAnswer, setSelectedAnswer] = useState<string | null>(null);
   const [isCorrect, setIsCorrect] = useState<boolean | null>(null);
+  const [wrongAnswerPenalty, setWrongAnswerPenalty] = useState<5 | 10>(10);
   const [currentReward, setCurrentReward] = useState<RewardType | null>(null);
+  const [doubleNextAwarded, setDoubleNextAwarded] = useState(false);
   const [luckyWheelUnlocked, setLuckyWheelUnlocked] = useState(false);
   const [luckyWheelSpinCount, setLuckyWheelSpinCount] = useState(0);
   const [wheelResult, setWheelResult] = useState<'CLAPPING_HAND' | 'BIG_CHEST' | null>(null);
-  const [doubleNextReward, setDoubleNextReward] = useState(false);
-  const [freePassAvailable, setFreePassAvailable] = useState(false);
   const [soundEnabled, setSoundEnabled] = useState(true);
 
   // Background particles for depth
@@ -61,6 +63,15 @@ export default function Home() {
     if (openedTiles.has(index) || phase !== 'PLAYING') return;
 
     setCurrentTileIndex(index);
+    const reward = getRandomReward();
+    setCurrentReward(reward);
+    setDoubleNextAwarded(false);
+
+    if (reward.type === 'freePass') {
+      setPhase('REWARD');
+      return;
+    }
+
     setPhase('QUESTION');
     sounds.click();
   };
@@ -73,6 +84,7 @@ export default function Home() {
 
     setSelectedAnswer(answer);
     setIsCorrect(correct);
+    setWrongAnswerPenalty(10);
 
     if (correct) {
       sounds.correct();
@@ -85,10 +97,35 @@ export default function Home() {
 
       setTimeout(() => {
         if (correct) {
-          const reward = getRandomReward();
-          setCurrentReward(reward);
-          setPhase('REWARD');
+          if (currentReward?.type === 'openExtra') {
+            const extraTiles = Array.from({ length: 20 }, (_, i) => i).filter(
+              (i) => !openedTiles.has(i) && i !== currentTileIndex
+            );
+            if (extraTiles.length > 0) {
+              const extraTile = extraTiles[Math.floor(Math.random() * extraTiles.length)];
+              setRevealingTiles([currentTileIndex, extraTile]);
+              setPhase('EXTRA_REVEAL');
+
+              setTimeout(() => {
+                setOpenedTiles((prev) => new Set([...prev, currentTileIndex, extraTile]));
+                setRevealingTiles([]);
+                sounds.reveal();
+                revealTileAndNextTurn();
+              }, 1800);
+              return;
+            }
+            revealTileAndNextTurn();
+          } else {
+            if (currentReward?.type === 'doubleNext') {
+              const doubledPoints = getRandomPointReward();
+              applyReward({ ...doubledPoints, value: doubledPoints.value * 2 });
+              setDoubleNextAwarded(true);
+              setCurrentReward(currentReward);
+            }
+            setPhase('REWARD');
+          }
         } else {
+          setCurrentReward(null);
           setScores((prev) => ({
             ...prev,
             [currentGroup]: prev[currentGroup] - 10,
@@ -102,7 +139,8 @@ export default function Home() {
   };
 
   const handleUseFreePass = () => {
-    setFreePassAvailable(false);
+    // Kept for compatibility with the question modal; passes normally get
+    // consumed automatically when the tile is clicked.
     setPhase('ANSWER_RESULT');
     setIsCorrect(true);
     sounds.unlock();
@@ -114,30 +152,15 @@ export default function Home() {
 
   const applyReward = (reward: RewardType) => {
     if (reward.type === 'points') {
-      const points = doubleNextReward ? reward.value * 2 : reward.value;
       setScores((prev) => ({
         ...prev,
-        [currentGroup]: prev[currentGroup] + points,
+        [currentGroup]: prev[currentGroup] + reward.value,
       }));
-      setDoubleNextReward(false);
 
-      if (points > 0) {
+      if (reward.value > 0) {
         sounds.scoreIncrease();
       } else {
         sounds.scoreDecrease();
-      }
-    } else if (reward.type === 'freePass') {
-      setFreePassAvailable(true);
-    } else if (reward.type === 'doubleNext') {
-      setDoubleNextReward(true);
-    } else if (reward.type === 'openExtra') {
-      const unopenedTiles = Array.from({ length: 20 }, (_, i) => i).filter(
-        (i) => !openedTiles.has(i) && i !== currentTileIndex
-      );
-      if (unopenedTiles.length > 0) {
-        const randomTile = unopenedTiles[Math.floor(Math.random() * unopenedTiles.length)];
-        setOpenedTiles((prev) => new Set([...prev, randomTile]));
-        sounds.reveal();
       }
     }
   };
@@ -150,6 +173,7 @@ export default function Home() {
 
     setSelectedAnswer(null);
     setIsCorrect(null);
+    setWrongAnswerPenalty(10);
     setCurrentTileIndex(null);
 
     const nextGroup = (currentGroup % 4) + 1 as GroupId;
@@ -160,11 +184,30 @@ export default function Home() {
   };
 
   const handleRewardClose = () => {
-    if (currentReward) {
-      applyReward(currentReward);
+    if (!currentReward) return;
+
+    if (currentReward.type === 'freePass') {
+      applyReward({ type: 'points', value: 10 });
       setCurrentReward(null);
+      revealTileAndNextTurn();
+      return;
     }
 
+    if (currentReward.type === 'doubleNext' && doubleNextAwarded) {
+      setDoubleNextAwarded(false);
+      setCurrentReward(null);
+      revealTileAndNextTurn();
+      return;
+    }
+
+    if (currentReward.type === 'doubleNext' || currentReward.type === 'openExtra') {
+      setPhase('QUESTION');
+      sounds.click();
+      return;
+    }
+
+    applyReward(currentReward);
+    setCurrentReward(null);
     revealTileAndNextTurn();
   };
 
@@ -208,26 +251,27 @@ export default function Home() {
     setCurrentGroup(1);
     setCurrentTileIndex(null);
     setOpenedTiles(new Set());
+    setRevealingTiles([]);
     setScores({ 1: 0, 2: 0, 3: 0, 4: 0 });
     setSelectedAnswer(null);
     setIsCorrect(null);
+    setWrongAnswerPenalty(10);
     setCurrentReward(null);
+    setDoubleNextAwarded(false);
     setLuckyWheelUnlocked(false);
     setLuckyWheelSpinCount(0);
     setWheelResult(null);
-    setDoubleNextReward(false);
-    setFreePassAvailable(false);
   };
 
   const currentQuestion = currentTileIndex !== null ? questions[currentTileIndex] : null;
 
   return (
     <div className="min-h-screen relative overflow-hidden">
-      {/* Bright energetic background with soft gradients */}
-      <div className="fixed inset-0 bg-gradient-to-br from-blue-50 via-purple-50 to-pink-50" />
+      {/* Dark base keeps the colorful game UI and text readable. */}
+      <div className="fixed inset-0 bg-[#080d24]" />
 
       {/* Ambient light blobs - colorful and energetic */}
-      <div className="fixed inset-0 opacity-40">
+      <div className="fixed inset-0 opacity-25">
         <motion.div
           animate={{
             x: [0, 100, 0],
@@ -235,7 +279,7 @@ export default function Home() {
             scale: [1, 1.2, 1],
           }}
           transition={{ duration: 20, repeat: Infinity, ease: 'easeInOut' }}
-          className="absolute top-20 left-20 w-96 h-96 bg-gradient-to-br from-blue-300 to-cyan-300 rounded-full blur-3xl"
+          className="absolute top-20 left-20 w-96 h-96 bg-gradient-to-br from-blue-500 to-cyan-400 rounded-full blur-3xl"
         />
         <motion.div
           animate={{
@@ -244,7 +288,7 @@ export default function Home() {
             scale: [1, 1.3, 1],
           }}
           transition={{ duration: 25, repeat: Infinity, ease: 'easeInOut' }}
-          className="absolute bottom-20 right-20 w-80 h-80 bg-gradient-to-br from-purple-300 to-pink-300 rounded-full blur-3xl"
+          className="absolute bottom-20 right-20 w-80 h-80 bg-gradient-to-br from-purple-500 to-pink-500 rounded-full blur-3xl"
         />
         <motion.div
           animate={{
@@ -253,12 +297,12 @@ export default function Home() {
             scale: [1, 1.15, 1],
           }}
           transition={{ duration: 18, repeat: Infinity, ease: 'easeInOut' }}
-          className="absolute top-1/2 left-1/2 w-72 h-72 bg-gradient-to-br from-yellow-300 to-orange-300 rounded-full blur-3xl"
+          className="absolute top-1/2 left-1/2 w-72 h-72 bg-gradient-to-br from-yellow-400 to-orange-500 rounded-full blur-3xl"
         />
       </div>
 
       {/* Subtle floating particles */}
-      <div className="fixed inset-0 opacity-30 pointer-events-none">
+      <div className="fixed inset-0 opacity-40 pointer-events-none">
         {particles.map((particle, i) => (
           <motion.div
             key={i}
@@ -266,7 +310,7 @@ export default function Home() {
             style={{ 
               width: particle.size, 
               height: particle.size,
-              background: 'linear-gradient(135deg, #60a5fa, #a78bfa)',
+               background: 'linear-gradient(135deg, #67e8f9, #c084fc)',
             }}
             animate={{
               x: [particle.x1, particle.x2],
@@ -289,7 +333,7 @@ export default function Home() {
         <motion.h1
           initial={{ y: -30, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
-          className="text-4xl font-black text-center bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 bg-clip-text text-transparent drop-shadow-lg"
+          className="text-4xl font-black text-center bg-gradient-to-r from-cyan-200 via-fuchsia-200 to-amber-200 bg-clip-text text-transparent drop-shadow-lg"
         >
           WHO IS THIS?
         </motion.h1>
@@ -302,46 +346,26 @@ export default function Home() {
           <PuzzleGrid
             imageUrl={imageUrl}
             openedTiles={openedTiles}
+            revealingTiles={revealingTiles}
             onTileClick={handleTileClick}
             disabled={phase !== 'PLAYING'}
           />
         )}
 
         {/* Active power-ups indicator */}
-        {(doubleNextReward || freePassAvailable) && (
-          <div className="flex gap-2">
-            {doubleNextReward && (
-              <motion.div
-                initial={{ scale: 0 }}
-                animate={{ scale: 1 }}
-                className="bg-purple-500/20 border border-purple-400 text-purple-200 text-xs font-bold py-1.5 px-4 rounded-full backdrop-blur-sm"
-              >
-                ✨ DOUBLE NEXT
-              </motion.div>
-            )}
-            {freePassAvailable && (
-              <motion.div
-                initial={{ scale: 0 }}
-                animate={{ scale: 1 }}
-                className="bg-yellow-500/20 border border-yellow-400 text-yellow-200 text-xs font-bold py-1.5 px-4 rounded-full backdrop-blur-sm"
-              >
-                🎫 FREE PASS
-              </motion.div>
-            )}
-          </div>
-        )}
       </div>
 
       {/* Modals */}
       <AnimatePresence>
-        {phase === 'QUESTION' && currentQuestion && (
+        {(phase === 'QUESTION' || phase === 'ANSWER_RESULT') && currentQuestion && (
           <QuestionModal
             question={currentQuestion}
             currentGroup={currentGroup}
             onAnswer={handleAnswer}
             selectedAnswer={selectedAnswer}
             isCorrect={isCorrect}
-            freePassAvailable={freePassAvailable}
+            wrongAnswerPenalty={wrongAnswerPenalty}
+            freePassAvailable={false}
             onUseFreePass={handleUseFreePass}
           />
         )}
@@ -384,6 +408,8 @@ export default function Home() {
         soundEnabled={soundEnabled}
         onToggleSound={() => setSoundEnabled(!soundEnabled)}
       />
+
+      <MusicControl />
     </div>
   );
 }

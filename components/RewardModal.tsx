@@ -137,13 +137,13 @@ export default function RewardModal({ reward, currentGroup, onClose }: RewardMod
 
             {reward.type === 'doubleNext' && (
               <div className="text-base font-bold text-purple-300">
-                Next reward ×2!
+                Double the next points!
               </div>
             )}
 
             {reward.type === 'openExtra' && (
               <div className="text-base font-bold text-blue-300">
-                Bonus tile revealed!
+                Open one extra tile after a correct answer!
               </div>
             )}
           </motion.div>

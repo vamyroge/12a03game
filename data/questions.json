@@ -1,178 +1,137 @@
 [
   {
     "id": 1,
-    "question": "What does 'break the ice' mean?",
-    "options": {
-      "A": "To physically break ice",
-      "B": "To make people feel more relaxed",
-      "C": "To interrupt someone",
-      "D": "To start a fight"
-    },
-    "correctAnswer": "B"
+    "question": "If I have enough time tomorrow, I ___ you with your homework.",
+    "options": ["help", "will help", "helped", "would help"],
+    "correctAnswer": 1
   },
   {
     "id": 2,
-    "question": "Which word means 'a short presentation'?",
-    "options": {
-      "A": "Pitch",
-      "B": "Catch",
-      "C": "Throw",
-      "D": "Pass"
-    },
-    "correctAnswer": "A"
+    "question": "She has lived in Hanoi ___ 2020.",
+    "options": ["for", "since", "during", "from"],
+    "correctAnswer": 1
   },
   {
     "id": 3,
-    "question": "What is a synonym for 'enthusiastic'?",
-    "options": {
-      "A": "Bored",
-      "B": "Tired",
-      "C": "Eager",
-      "D": "Lazy"
-    },
-    "correctAnswer": "C"
+    "question": "The students ___ their project when the teacher entered the classroom.",
+    "options": ["discuss", "have discussed", "were discussing", "are discussing"],
+    "correctAnswer": 2
   },
   {
     "id": 4,
-    "question": "'To give a presentation' can also be said as:",
-    "options": {
-      "A": "To make a speech",
-      "B": "To do a talk",
-      "C": "To deliver a presentation",
-      "D": "All of the above"
-    },
-    "correctAnswer": "D"
+    "question": "My brother is interested ___ learning foreign languages.",
+    "options": ["in", "on", "at", "for"],
+    "correctAnswer": 0
   },
   {
     "id": 5,
-    "question": "What does 'audience engagement' mean?",
-    "options": {
-      "A": "Paying the audience",
-      "B": "Making the audience participate",
-      "C": "Ignoring the audience",
-      "D": "Dismissing the audience"
-    },
-    "correctAnswer": "B"
+    "question": "The book ___ by this famous author has become very popular among teenagers.",
+    "options": ["writing", "wrote", "written", "was written"],
+    "correctAnswer": 2
   },
   {
     "id": 6,
-    "question": "Which is NOT a presentation skill?",
-    "options": {
-      "A": "Eye contact",
-      "B": "Clear voice",
-      "C": "Mumbling",
-      "D": "Body language"
-    },
-    "correctAnswer": "C"
+    "question": "You should ___ your phone while studying if you want to concentrate better.",
+    "options": ["turn off", "turn on", "look after", "take after"],
+    "correctAnswer": 0
   },
   {
     "id": 7,
-    "question": "What does 'Q&A' stand for?",
-    "options": {
-      "A": "Quiet and Angry",
-      "B": "Questions and Answers",
-      "C": "Quick and Active",
-      "D": "Quality and Accuracy"
-    },
-    "correctAnswer": "B"
+    "question": "Although the weather was bad, the students ___ to school on time.",
+    "options": ["arrived", "arrival", "arriving", "arrive"],
+    "correctAnswer": 0
   },
   {
     "id": 8,
-    "question": "'To wrap up' means:",
-    "options": {
-      "A": "To start",
-      "B": "To continue",
-      "C": "To conclude",
-      "D": "To pause"
-    },
-    "correctAnswer": "C"
+    "question": "The teacher asked us ___ our assignments before Friday.",
+    "options": ["finish", "finishing", "to finish", "finished"],
+    "correctAnswer": 2
   },
   {
     "id": 9,
-    "question": "Which phrase shows confidence?",
-    "options": {
-      "A": "I think maybe...",
-      "B": "I'm not sure but...",
-      "C": "I strongly believe...",
-      "D": "Perhaps possibly..."
-    },
-    "correctAnswer": "C"
+    "question": "If I ___ you, I would spend more time preparing for the exam.",
+    "options": ["am", "was", "were", "have been"],
+    "correctAnswer": 2
   },
   {
     "id": 10,
-    "question": "What is 'body language'?",
-    "options": {
-      "A": "Written language",
-      "B": "Sign language",
-      "C": "Non-verbal communication",
-      "D": "Foreign language"
-    },
-    "correctAnswer": "C"
+    "question": "The more you practice speaking English, ___ you become.",
+    "options": ["more confident", "the more confident", "the most confident", "most confident"],
+    "correctAnswer": 1
   },
   {
     "id": 11,
-    "question": "'To elaborate' means:",
-    "options": {
-      "A": "To explain in more detail",
-      "B": "To skip details",
-      "C": "To summarize quickly",
-      "D": "To change topic"
-    },
-    "correctAnswer": "A"
+    "question": "Students should learn how to manage their time effectively because it can help them ___ stress.",
+    "options": ["reduce", "reducing", "reduced", "reduction"],
+    "correctAnswer": 0
   },
   {
     "id": 12,
-    "question": "Which is good for opening a presentation?",
-    "options": {
-      "A": "A relevant question",
-      "B": "Reading from notes",
-      "C": "Looking at the floor",
-      "D": "Speaking very quietly"
-    },
-    "correctAnswer": "A"
+    "question": "The new library ___ next month to provide students with a better place to study.",
+    "options": ["opens", "opened", "will be opened", "has opened"],
+    "correctAnswer": 2
   },
   {
     "id": 13,
-    "question": "What does 'visual aid' mean?",
-    "options": {
-      "A": "Help from audience",
-      "B": "Slides or images to support presentation",
-      "C": "Eye glasses",
-      "D": "Stage lighting"
-    },
-    "correctAnswer": "B"
+    "question": "She didn't attend the meeting, ___ surprised everyone in the class.",
+    "options": ["who", "which", "that", "where"],
+    "correctAnswer": 1
   },
   {
     "id": 14,
-    "question": "'Articulate' means:",
-    "options": {
-      "A": "Speaking unclearly",
-      "B": "Speaking clearly and effectively",
-      "C": "Speaking quietly",
-      "D": "Not speaking at all"
-    },
-    "correctAnswer": "B"
+    "question": "Tom has been studying English for three years, ___?",
+    "options": ["hasn't he", "doesn't he", "isn't he", "wasn't he"],
+    "correctAnswer": 0
   },
   {
     "id": 15,
-    "question": "What should you do during a presentation?",
-    "options": {
-      "A": "Turn your back to audience",
-      "B": "Maintain eye contact",
-      "C": "Speak in monotone",
-      "D": "Rush through slides"
-    },
-    "correctAnswer": "B"
+    "question": "Choose the word closest in meaning to \"essential\".",
+    "options": ["unnecessary", "expensive", "necessary", "difficult"],
+    "correctAnswer": 2
   },
   {
     "id": 16,
-    "question": "'Persuasive' means:",
-    "options": {
-      "A": "Boring",
-      "B": "Confusing",
-      "C": "Convincing",
-      "D": "Uncertain"
-    },
-    "correctAnswer": "C"
+    "question": "Many young people use social media to ___ with their friends and share information.",
+    "options": ["communicate", "prevent", "replace", "avoid"],
+    "correctAnswer": 0
+  },
+  {
+    "id": 17,
+    "question": "By the time we arrived at the station, the train ___.",
+    "options": ["leaves", "has left", "had left", "was leaving"],
+    "correctAnswer": 2
+  },
+  {
+    "id": 18,
+    "question": "Choose the sentence closest in meaning to: \"You don't need to bring your laptop tomorrow.\"",
+    "options": [
+      "You must bring your laptop tomorrow.",
+      "You shouldn't bring your laptop tomorrow.",
+      "You don't have to bring your laptop tomorrow.",
+      "You aren't able to bring your laptop tomorrow."
+    ],
+    "correctAnswer": 2
+  },
+  {
+    "id": 19,
+    "question": "Online learning gives students greater flexibility, allowing them to study at their own pace and review lessons whenever necessary. What is the main advantage of online learning mentioned?",
+    "options": [
+      "It makes all students study faster.",
+      "It allows students to study more flexibly.",
+      "It completely replaces teachers.",
+      "It makes lessons more difficult."
+    ],
+    "correctAnswer": 1
+  },
+  {
+    "id": 20,
+    "question": "Choose the best completion: The more carefully students prepare for an exam, ___.",
+    "options": [
+      "they will feel more confident",
+      "the more confident they will feel",
+      "more confident they feel",
+      "the most confident they will feel"
+    ],
+    "correctAnswer": 1
   }
 ]

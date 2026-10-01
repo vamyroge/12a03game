@@ -27,6 +27,7 @@ export type GamePhase =
   | 'PLAYING'
   | 'QUESTION'
   | 'ANSWER_RESULT'
+  | 'EXTRA_REVEAL'
   | 'REWARD'
   | 'LUCKY_WHEEL'
   | 'CHEST'

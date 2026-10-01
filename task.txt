@@ -1,523 +1,139 @@
-Tiếp tục làm việc trên codebase game Quiz hiện tại.
 
-**KHÔNG rebuild project.**
-**KHÔNG thay đổi gameplay logic không liên quan.**
-**KHÔNG xóa các animation/effect đã làm tốt ở phiên bản trước.**
+[
+  {
+    "id": 1,
+    "question": "If I have enough time tomorrow, I ___ you with your homework.",
+    "options": ["help", "will help", "helped", "would help"],
+    "correctAnswer": 1
+  },
+  {
+    "id": 2,
+    "question": "She has lived in Hanoi ___ 2020.",
+    "options": ["for", "since", "during", "from"],
+    "correctAnswer": 1
+  },
+  {
+    "id": 3,
+    "question": "The students ___ their project when the teacher entered the classroom.",
+    "options": ["discuss", "have discussed", "were discussing", "are discussing"],
+    "correctAnswer": 2
+  },
+  {
+    "id": 4,
+    "question": "My brother is interested ___ learning foreign languages.",
+    "options": ["in", "on", "at", "for"],
+    "correctAnswer": 0
+  },
+  {
+    "id": 5,
+    "question": "The book ___ by this famous author has become very popular among teenagers.",
+    "options": ["writing", "wrote", "written", "was written"],
+    "correctAnswer": 2
+  },
+  {
+    "id": 6,
+    "question": "You should ___ your phone while studying if you want to concentrate better.",
+    "options": ["turn off", "turn on", "look after", "take after"],
+    "correctAnswer": 0
+  },
+  {
+    "id": 7,
+    "question": "Although the weather was bad, the students ___ to school on time.",
+    "options": ["arrived", "arrival", "arriving", "arrive"],
+    "correctAnswer": 0
+  },
+  {
+    "id": 8,
+    "question": "The teacher asked us ___ our assignments before Friday.",
+    "options": ["finish", "finishing", "to finish", "finished"],
+    "correctAnswer": 2
+  },
+  {
+    "id": 9,
+    "question": "If I ___ you, I would spend more time preparing for the exam.",
+    "options": ["am", "was", "were", "have been"],
+    "correctAnswer": 2
+  },
+  {
+    "id": 10,
+    "question": "The more you practice speaking English, ___ you become.",
+    "options": ["more confident", "the more confident", "the most confident", "most confident"],
+    "correctAnswer": 1
+  },
+  {
+    "id": 11,
+    "question": "Students should learn how to manage their time effectively because it can help them ___ stress.",
+    "options": ["reduce", "reducing", "reduced", "reduction"],
+    "correctAnswer": 0
+  },
+  {
+    "id": 12,
+    "question": "The new library ___ next month to provide students with a better place to study.",
+    "options": ["opens", "opened", "will be opened", "has opened"],
+    "correctAnswer": 2
+  },
+  {
+    "id": 13,
+    "question": "She didn't attend the meeting, ___ surprised everyone in the class.",
+    "options": ["who", "which", "that", "where"],
+    "correctAnswer": 1
+  },
+  {
+    "id": 14,
+    "question": "Tom has been studying English for three years, ___?",
+    "options": ["hasn't he", "doesn't he", "isn't he", "wasn't he"],
+    "correctAnswer": 0
+  },
+  {
+    "id": 15,
+    "question": "Choose the word closest in meaning to \"essential\".",
+    "options": ["unnecessary", "expensive", "necessary", "difficult"],
+    "correctAnswer": 2
+  },
+  {
+    "id": 16,
+    "question": "Many young people use social media to ___ with their friends and share information.",
+    "options": ["communicate", "prevent", "replace", "avoid"],
+    "correctAnswer": 0
+  },
+  {
+    "id": 17,
+    "question": "By the time we arrived at the station, the train ___.",
+    "options": ["leaves", "has left", "had left", "was leaving"],
+    "correctAnswer": 2
+  },
+  {
+    "id": 18,
+    "question": "Choose the sentence closest in meaning to: \"You don't need to bring your laptop tomorrow.\"",
+    "options": [
+      "You must bring your laptop tomorrow.",
+      "You shouldn't bring your laptop tomorrow.",
+      "You don't have to bring your laptop tomorrow.",
+      "You aren't able to bring your laptop tomorrow."
+    ],
+    "correctAnswer": 2
+  },
+  {
+    "id": 19,
+    "question": "Online learning gives students greater flexibility, allowing them to study at their own pace and review lessons whenever necessary. What is the main advantage of online learning mentioned?",
+    "options": [
+      "It makes all students study faster.",
+      "It allows students to study more flexibly.",
+      "It completely replaces teachers.",
+      "It makes lessons more difficult."
+    ],
+    "correctAnswer": 1
+  },
+  {
+    "id": 20,
+    "question": "Choose the best completion: The more carefully students prepare for an exam, ___.",
+    "options": [
+      "they will feel more confident",
+      "the more confident they will feel",
+      "more confident they feel",
+      "the most confident they will feel"
+    ],
+    "correctAnswer": 1
+  }
+]
 
-Hãy inspect implementation hiện tại rồi thực hiện các chỉnh sửa dưới đây.
-
----
-
-# 1. THÊM NHẠC NỀN NHẸ
-
-Thêm background music cho game.
-
-Yêu cầu:
-
-* Nhạc nền nhẹ.
-* Năng lượng vui vẻ, phù hợp game quiz/warm-up.
-* Không quá ồn hoặc gây khó chịu.
-* Volume mặc định thấp, khoảng 10–20%.
-* Có loop.
-* Không làm ảnh hưởng performance.
-
-Tạo music control nhỏ, ví dụ:
-
-`🔊 / 🔇`
-
-Có thể đặt ở góc màn hình cùng nhóm utility controls.
-
-### Quan trọng
-
-Không tự động phát nhạc theo cách bị browser chặn.
-
-Nếu browser yêu cầu user interaction:
-
-* chờ user click/tương tác đầu tiên.
-* sau đó bắt đầu music.
-* không phá flow game.
-
-Khi mute:
-
-* nhạc dừng.
-* icon đổi trạng thái.
-
-Khi unmute:
-
-* nhạc tiếp tục.
-
-Không restart nhạc mỗi lần đổi component/state.
-
----
-
-# 2. ĐỔI BACKGROUND WEB — SÁNG HƠN & NĂNG LƯỢNG HƠN
-
-Background hiện tại đang hơi tối.
-
-Hãy làm background:
-
-**sáng hơn + energetic hơn + colorful hơn**
-
-nhưng vẫn đảm bảo text/UI dễ đọc.
-
-Visual direction:
-
-* vibrant
-* playful
-* modern
-* energetic
-* game-show feeling
-
-Có thể sử dụng:
-
-* soft blue
-* cyan
-* purple
-* pink
-* warm yellow/orange
-* subtle gradient
-* ambient blobs
-* soft glow
-
-Nhưng KHÔNG làm background thành một gradient phẳng khổng lồ.
-
-Tạo depth bằng nhiều lớp ánh sáng nhẹ.
-
-Ví dụ hierarchy:
-
-```text
-Background
-→ ambient gradients
-→ subtle floating shapes/particles
-→ game UI
-→ reward effects
-```
-
-Background không được cạnh tranh với:
-
-* Quiz
-* Ranking
-* Lucky Wheel
-* Clapping Hand
-* Big Chest
-
-Mục tiêu:
-
-> Nhìn vào game phải thấy sáng, vui, có năng lượng ngay lập tức.
-
----
-
-# 3. LUCKY WHEEL — FIX ICON POSITION
-
-Lucky Wheel hiện tại có vấn đề:
-
-**Các icon trên từng segment không nằm đúng vị trí/không đồng đều khi wheel quay.**
-
-Hãy sửa lại implementation.
-
-## Quy tắc
-
-Mỗi segment phải có:
-
-* icon
-* label nếu có
-
-và tất cả phải nằm **đúng tâm/radial position của segment**.
-
-Khi wheel quay:
-
-**icon phải quay cùng segment.**
-
-Không được:
-
-* icon đứng yên trong khi segment quay
-* icon lệch tâm
-* icon bị trôi
-* khoảng cách icon không đều
-* icon nằm quá gần tâm
-* icon nằm quá sát mép
-* icon bị xoay sai hướng ngoài ý muốn
-
----
-
-## Cách triển khai mong muốn
-
-Không hard-code vị trí từng icon bằng pixel nếu có thể tránh.
-
-Hãy tính vị trí theo:
-
-```text
-segmentIndex
-segmentCount
-angle
-radius
-center
-```
-
-Ví dụ logic:
-
-```text
-angle = segmentIndex * segmentAngle + segmentAngle / 2
-```
-
-Sau đó position icon theo radial coordinate.
-
-Mọi segment phải có:
-
-**khoảng cách angular bằng nhau.**
-
----
-
-# 4. ICON ORIENTATION
-
-Khi wheel quay:
-
-Icon phải giữ visual orientation hợp lý.
-
-Nếu thiết kế wheel yêu cầu icon luôn hướng về người chơi:
-
-* counter-rotate icon theo wheel rotation.
-
-Nếu icon được thiết kế để xoay cùng wheel:
-
-* giữ nguyên rotation relationship với segment.
-
-Chọn cách nhìn đẹp nhất nhưng phải **đồng nhất cho tất cả segment**.
-
-Không để icon này một kiểu, icon kia một kiểu.
-
----
-
-# 5. WHEEL SPIN ACCURACY
-
-Sau khi sửa icon position, kiểm tra lại toàn bộ spin calculation.
-
-Yêu cầu:
-
-```text
-visual segment
-=
-icon
-=
-logical reward
-=
-pointer result
-```
-
-Khi wheel dừng:
-
-Pointer phải chỉ chính xác segment đã được chọn.
-
-Không xảy ra:
-
-> nhìn trúng Clapping Hand nhưng logic lại trả Chest.
-
-Hoặc:
-
-> icon nhìn nằm ở segment A nhưng reward là segment B.
-
-Test nhiều lần với nhiều segment khác nhau.
-
----
-
-# 6. Ô CHỨA MẢNH GHÉP — TO HƠN
-
-Phần chứa các **mảnh ghép/puzzle pieces** hiện tại hơi nhỏ.
-
-Hãy tăng kích thước khu vực chứa mảnh ghép.
-
-Mục tiêu:
-
-* pieces dễ nhìn hơn.
-* dễ phân biệt.
-* spacing thoải mái.
-* không bị chen chúc.
-* responsive.
-
-Tăng khoảng:
-
-**20–30% so với hiện tại**
-
-không cần phóng quá lớn.
-
-Nếu có container/grid:
-
-* tăng kích thước cell.
-* giữ alignment.
-* giữ khoảng cách đều.
-
-Không làm overflow.
-
----
-
-# 7. RANKING / SCORE — NHỎ LẠI MỘT CHÚT
-
-Phần điểm/ranking hiện tại đang chiếm hơi nhiều visual attention.
-
-Hãy giảm nhẹ kích thước:
-
-* score number
-* ranking card
-* ranking padding
-* avatar/icon nếu cần
-
-Khoảng:
-
-**10–20% nhỏ hơn hiện tại**
-
-Không làm mất khả năng đọc.
-
-Mục tiêu visual hierarchy:
-
-```text
-Quiz / Puzzle
-      ↓
-Main interaction
-      ↓
-Reward objects
-      ↓
-Ranking / Score
-```
-
-Ranking vẫn phải dễ nhìn nhưng không được cạnh tranh với Lucky Wheel / Chest / Clapping Hand.
-
----
-
-# 8. CLAPPING HAND — GIỮ NGUYÊN EFFECT HIỆN TẠI
-
-CỰC KỲ QUAN TRỌNG:
-
-Khi quay Lucky Wheel và kết quả là:
-
-**CLAPPING HAND**
-
-hãy **GIỮ NGUYÊN hiệu ứng vỗ tay hiện tại** nếu nó đang hoạt động tốt.
-
-Không redesign lại animation vỗ tay.
-
-Không thay bằng animation mới.
-
-Không xóa particle/effect hiện tại.
-
-Không thay đổi timing trừ khi thực sự cần.
-
----
-
-# 9. CLAPPING HAND — EXIT BUTTON
-
-Khi trigger Clapping Hand:
-
-Hiện:
-
-**CLAPPING HAND**
-
-và có nút:
-
-**X**
-
-để exit/đóng.
-
-Flow:
-
-```text
-Wheel
- ↓
-Clapping Hand reward
- ↓
-Existing clapping animation
- ↓
-"CLAPPING HAND"
-+
-X button
-```
-
-Nút X:
-
-* rõ ràng
-* dễ click
-* nằm ở góc hợp lý của effect/modal.
-* có hover state.
-* click → đóng Clapping Hand.
-* không reset ranking.
-* không reset quiz.
-* không trigger reward lần nữa.
-
-Không để X che mất animation chính.
-
----
-
-# 10. BIGGER CLAPPING HAND — CŨNG PHẢI CÓ X
-
-Có một trạng thái **BIGGER CLAPPING HAND**.
-
-Khi trigger Bigger Clapping Hand:
-
-**GIỮ NGUYÊN EFFECT HIỆN TẠI.**
-
-Không redesign animation nếu không cần.
-
-Nhưng bổ sung:
-
-```text
-BIGGER CLAPPING HAND
-+
-X
-```
-
-Nút X có cùng behavior:
-
-* click → exit
-* không reset game
-* không reset ranking
-* không trigger lại effect
-* không mất reward đã nhận
-
----
-
-# 11. CLAPPING MODAL / OVERLAY
-
-Clapping Hand và Bigger Clapping Hand nên có một overlay hợp lý để focus vào effect.
-
-Nhưng:
-
-* không làm background đen hoàn toàn.
-* không che toàn bộ visual game quá nặng.
-* giữ cảm giác celebration.
-
-Có thể dùng:
-
-* subtle backdrop blur
-* transparent overlay
-* glow
-* particles
-
-Animation close:
-
-* quick fade/scale-out
-* khoảng 200–350ms.
-
----
-
-# 12. KHÔNG PHÁ FLOW HIỆN TẠI
-
-Giữ nguyên:
-
-* Quiz
-* 20 câu
-* random score
-* ranking
-* Lucky Wheel unlock
-* JOIN IN
-* Lucky Wheel spin
-* Big Chest
-* Click to Open
-* Clapping Hand effect
-* Bigger Clapping Hand
-* reward logic
-
-Chỉ chỉnh những phần được yêu cầu.
-
----
-
-# 13. FINAL VISUAL HIERARCHY
-
-Sau các thay đổi, visual hierarchy mong muốn:
-
-### Background
-
-Sáng + energetic nhưng nhẹ.
-
-### Main Quiz / Puzzle
-
-Dễ nhìn nhất.
-
-### Lucky Wheel / Chest
-
-Reward elements nổi bật.
-
-### Clapping Hand
-
-Celebration state nổi bật nhất khi trigger.
-
-### Ranking
-
-Nhỏ gọn hơn, không tranh spotlight.
-
----
-
-# 14. VISUAL QA BẮT BUỘC
-
-Nếu có browser/screenshot capability, kiểm tra:
-
-1. Initial screen
-2. Background
-3. Quiz
-4. Puzzle pieces
-5. Ranking
-6. Lucky Wheel locked
-7. Lucky Wheel unlocked
-8. Big Lucky Wheel
-9. Wheel spinning
-10. Icon alignment
-11. Wheel stops on each type of reward
-12. Clapping Hand
-13. Clapping Hand + X
-14. Bigger Clapping Hand
-15. Bigger Clapping Hand + X
-16. Big Chest
-17. Chest opening
-18. Reward reveal
-19. Music on
-20. Music muted
-
-Đặc biệt kiểm tra:
-
-### Wheel
-
-```text
-segment
-↓
-icon
-↓
-pointer
-↓
-logical reward
-```
-
-phải luôn đồng bộ.
-
----
-
-# 15. QUALITY BAR
-
-Không chỉ cần:
-
-> "Code chạy."
-
-Tôi muốn:
-
-> **UI đẹp + sáng + energetic + animation mượt + wheel chính xác + reward rõ + không lỗi interaction.**
-
-Nếu screenshot cho thấy:
-
-* icon lệch
-* wheel méo
-* background quá tối
-* ranking quá lớn
-* puzzle pieces quá nhỏ
-* X button khó thấy
-* animation bị cắt
-* modal overflow
-
-→ tự sửa tiếp.
-
-Sau khi hoàn thành:
-
-* typecheck
-* lint
-* test
-* production build
-
-và tự fix mọi lỗi phát sinh.
-
-Cuối cùng báo cáo ngắn gọn những gì đã thay đổi và trạng thái verification.

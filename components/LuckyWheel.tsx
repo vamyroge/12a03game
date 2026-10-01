@@ -78,9 +78,11 @@ export default function LuckyWheel({ unlocked, spinCount, onSpin }: LuckyWheelPr
     const result = spinCount === 0 ? 'CLAPPING_HAND' : 'BIG_CHEST';
     
     // Calculate target rotation to land on correct segment
-    const segmentAngle = 360 / 20; // 20 segments
+    const segmentAngle = 360 / 20; // 20 equal segments
     const targetSegment = result === 'BIG_CHEST' ? 10 : 5; // Different segments
-    const targetRotation = 1800 + (targetSegment * segmentAngle); // 5 full spins + target
+    const segmentCenter = targetSegment * segmentAngle - 81;
+    const landingRotation = ((-90 - segmentCenter) % 360 + 360) % 360;
+    const targetRotation = (spinCount + 1) * 1800 + landingRotation;
 
     // Play tick sounds during spin
     const tickInterval = setInterval(() => {
@@ -237,14 +239,14 @@ export default function LuckyWheel({ unlocked, spinCount, onSpin }: LuckyWheelPr
                 transition={{ duration: 0.5, repeat: 3 }}
                 className="text-8xl mb-4"
               >
-                🎰
+                🤖
               </motion.div>
               <motion.div
                 initial={{ y: 20, opacity: 0 }}
                 animate={{ y: 0, opacity: 1 }}
                 className="text-4xl font-black text-yellow-300 text-center drop-shadow-lg"
               >
-                LUCKY WHEEL
+                MARK ZUCKERBERG
               </motion.div>
               <motion.div
                 initial={{ y: 20, opacity: 0 }}
@@ -351,20 +353,25 @@ export default function LuckyWheel({ unlocked, spinCount, onSpin }: LuckyWheelPr
                   {/* Icons positioned correctly in each segment */}
                   {Array.from({ length: 20 }).map((_, i) => {
                     const isBigChest = i === 10;
-                    const angle = (i * 360) / 20; // Degrees from top
+                    const segmentCenter = (i + 0.5) * (360 / 20) - 90;
+                    const angleInRadians = (segmentCenter * Math.PI) / 180;
+                    // Keep the icon near the rim while leaving enough padding inside the slice.
+                    const iconRadius = 43;
+                    const left = 50 + Math.cos(angleInRadians) * iconRadius;
+                    const top = 50 + Math.sin(angleInRadians) * iconRadius;
                     
                     return (
                       <div
                         key={i}
-                        className="absolute left-1/2 top-1/2"
+                        className="absolute text-2xl leading-none"
                         style={{
-                          transform: `rotate(${angle}deg) translateY(-60px) rotate(-${angle}deg)`,
-                          transformOrigin: 'center',
+                          left: `${left}%`,
+                          top: `${top}%`,
+                          transform: 'translate(-50%, -50%)',
+                          textShadow: '0 2px 4px rgba(0,0,0,0.5)',
                         }}
                       >
-                        <div className="text-2xl" style={{ textShadow: '0 2px 4px rgba(0,0,0,0.5)' }}>
-                          {isBigChest ? '🎁' : '👏'}
-                        </div>
+                        {isBigChest ? '🎁' : '👏'}
                       </div>
                     );
                   })}
